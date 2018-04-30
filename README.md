@@ -5,8 +5,7 @@
 |底部导航视图+fragment|自己实现底部导航视图|
 |baseActivity|要有那些功能|
 |关于drawable和drawable-v24|出现的错误  Binary XML file line #0: Error inflating class android.support.design.widget.BottomNavigationView|
-|BottomNavigationView|在使用这个控件的时候,一般用到矢量图,需要添加  ` implementation 'com.android.support:design:26.1.0' `和     `implementation 'com.android.support:support-vector-drawable:26.1.0' `
-和     最后这个在defaultconfigure中 `vectorDrawables.useSupportLibrary= true`|
+|BottomNavigationView|在使用这个控件的时候,一般用到矢量图,需要添加  ` implementation 'com.android.support:design:26.1.0' `和     `implementation 'com.android.support:support-vector-drawable:26.1.0' `和     最后这个在defaultconfigure中 `vectorDrawables.useSupportLibrary= true`|
 |fragment使用|使用的相关问题|
 
 
