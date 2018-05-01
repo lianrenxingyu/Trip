@@ -3,7 +3,6 @@ package com.chenggong.trip.ui;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,47 +10,46 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.chenggong.trip.R;
-import com.chenggong.trip.adapter.NewsAdapter;
-import com.chenggong.trip.bean.News;
+import com.chenggong.trip.adapter.ContactsAdapter;
+import com.chenggong.trip.bean.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author chenggong
- */
-
-
-/**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link NewsFragment.OnFragmentInteractionListener} interface
+ * {@link ContactsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link NewsFragment#newInstance} factory method to
+ * Use the {@link ContactsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NewsFragment extends Fragment {
+public class ContactsFragment extends Fragment {
+
+    private RecyclerView recycler_contacts;
+    private SwipeRefreshLayout refreshLayout;
+
+    private List<Contact> contactList;
+    private ContactsAdapter adapter;
 
     private OnFragmentInteractionListener mListener;
-    private SwipeRefreshLayout refreshLayout;
-    private RecyclerView recycler_news;
 
-    private List<News> newsList;
-    private NewsAdapter adapter;
-
-    public NewsFragment() {
+    public ContactsFragment() {
         // Required empty public constructor
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     * @return A new instance of fragment NewsFragment.
      */
-    public static NewsFragment newInstance() {
-        return new NewsFragment();
+    // TODO: Rename and change types and number of parameters
+    public static ContactsFragment newInstance() {
+        ContactsFragment fragment = new ContactsFragment();
+
+        return fragment;
     }
 
     @Override
@@ -59,38 +57,32 @@ public class NewsFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    /**
-     * Inflate the layout for this fragment
-     * @param savedInstanceState
-     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_news, container, false);
+        View view = inflater.inflate(R.layout.fragment_contacts, container, false);
+        recycler_contacts = view.findViewById(R.id.recycler_contacts);
         refreshLayout = view.findViewById(R.id.refreshLayout);
-        recycler_news = view.findViewById(R.id.recycler_news);
 
-        newsList = new ArrayList<>();
+        contactList = new ArrayList<>();
         initData();
-        adapter = new NewsAdapter(getContext(), newsList);
+        adapter = new ContactsAdapter(getContext(), contactList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recycler_news.setLayoutManager(layoutManager);
-        recycler_news.addItemDecoration(new SpaceItemDecoration(4,16,16));
-        recycler_news.setAdapter(adapter);
+        recycler_contacts.setLayoutManager(layoutManager);
+        recycler_contacts.addItemDecoration(new SpaceItemDecoration(4, 16, 16));
+        recycler_contacts.setAdapter(adapter);
+
         return view;
     }
 
-    public void initData(){
-//        News news = new News("名字","我已经到了,我要去那里,我要去那里我要去那里","11:30","imagePath");
-        for(int i = 0;i<15;i++){
-            News news ;
-            news = new News("名字","我已经到了,我要去那里,我要去那里我要去那里,aaa","11:30","imagePath");
-            news.setName("名字"+String.valueOf(i));
-            newsList.add(news);
+    private void initData() {
+        for (int i = 0;i<15;i++){
+            Contact contact = new Contact("名字"+String.valueOf(i), "昵称", "imagePath");
+            contactList.add(contact);
         }
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -102,21 +94,6 @@ public class NewsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-    }
-
-    /**
-     * Activity中onCreate方法完成,fragment可以与Activity中的控件交互
-     * @param savedInstanceState
-     */
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -126,11 +103,14 @@ public class NewsFragment extends Fragment {
     }
 
     /**
-     * 和Activity的交互接口
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
