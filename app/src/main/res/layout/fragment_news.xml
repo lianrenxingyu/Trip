@@ -3,11 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.chenggong.trip.ui.NewsFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!--下拉刷新-->
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/news_refreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_news"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

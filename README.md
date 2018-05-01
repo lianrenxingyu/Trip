@@ -7,7 +7,11 @@
 |关于drawable和drawable-v24|出现的错误  Binary XML file line #0: Error inflating class android.support.design.widget.BottomNavigationView|
 |BottomNavigationView|在使用这个控件的时候,一般用到矢量图,需要添加  ` implementation 'com.android.support:design:26.1.0' `和     `implementation 'com.android.support:support-vector-drawable:26.1.0' `和     最后这个在defaultconfigure中 `vectorDrawables.useSupportLibrary= true`|
 |fragment使用|使用的相关问题|
+|recycleview使用|对item整体的监听|
+|textview添加省略|` android:maxLines="1"  android:ellipsize="end"  android:singleLine="true"`|
 
+
+|ConstraintLayout|布局倾向于top,bottom,start,end|
 
 
 ### toolbar
@@ -24,3 +28,11 @@
 ```
   
 - 上面这个报错的特点是 Binary XML file line #0,后面的控件BottomNavigationView找不到相关对象
+
+### fragment 
+- 直接的使用碎片,例如在<fragment>标签中使用name制定类,使用layout制定布局,layout属性不必须,因为那么制定的类就已经会实现布局
+- 定义一个framelayout容器,动态添加fragment布局,replace方法,还有add,remove方法,涉及tag标签
+- fragment 中使用recycleview,传递参数
+
+### recycleview
+- 对item整体监听,有两种考虑   (1) 对整个item的layout布局设置监听 (2) 在adapter中添加一个接口,包含onClick(int position)和onItemClick两个接口方法
