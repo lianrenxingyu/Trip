@@ -11,9 +11,8 @@
 |textview添加省略|` android:maxLines="1"  android:ellipsize="end"  android:singleLine="true"`|
 |**避免在include中添加id,否则layout中的id不能直接findviewbyid**在包含id的include xml代码块中寻找被包含layout的中控件id|因为include的xml代码块中包含id,不能直接用findbyid(R.id.toolbar),需要inflate一个layout,例如,` View layout = getLayoutInflater().inflate(R.layout.toolbar_layout,null);toolbar = layout.findViewById(R.id.toolbar);`|
 |在baseActivity中初始化控件是一个错误的做法,尤其是需要在onCreate中对控件进行操作时|因为要findViewById操作,所以需要子类{@link #setContentView(View)}方法执行之后才能初始化toolbar,所以不能在baseActivity的{@link #onCreate(Bundle)} 方法中执行下面这个方法|
-
 |ConstraintLayout|布局倾向于top,bottom,start,end|
-
+|**mysql**数据库安装|三种安装方式(1)apt-get 安装<https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/>(2)下载对应的deb安装包,例如mysql-server_8.0.11-1ubuntu16.04_amd64.deb-bundle,参考网址(3)从二进制源码包安装,tar包或者tar.gz包,本次采用第一种方式|
 
 ### toolbar
 - 定义单独的toolbar_layout实现复用效果
@@ -46,3 +45,15 @@
 
 ### include layout 
 - 写代码测试include中包含layout,在寻找layout中的id的方法,**代码测试**
+
+### mysql安装
+- apt-get安装方式,sudo apt-get install mysql-server mysql-client
+    - 数据库目录：/var/lib/mysql/ 
+      
+    - 配置文件：/usr/share/mysql（命令及配置文件） ，/etc/mysql（如：my.cnf）
+      
+    - 相关命令：/usr/bin(mysqladmin mysqldump等命令) 和/usr/sbin
+      
+    - 启动脚本：/etc/init.d/mysql（启动脚本文件mysql的目录）
+- mysql的启动,停止,**常用的操作**
+- Java链接mysql数据库[mysql官方Java驱动](https://dev.mysql.com/downloads/connector/j/),Java操作数据库测试,可以看如下[链接](http://www.runoob.com/java/java-mysql-connect.html)
