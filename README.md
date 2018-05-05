@@ -19,7 +19,7 @@
 - 在styles文件中去除actionbar,去除actionbar的几种方法
 - 几个主要属性app:title,subtitle,logo,navigationIcon,通过向toolbar布局中添加textview实现标题在中间的效果
 - Toolbar setNavigationIcon无效原因：  1.设置在setSupportActionBar( mToolbar );之前无效；  2.设置在DrawerLayout.setDrawerListener(ActionBarDrawerToggle);之前也无效；
-- 下面这几行代码的作用,代码测试 
+- 下面这几行代码的作用,代码测试
  ```
      //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
      //        getSupportActionBar().setHomeButtonEnabled(true);
@@ -32,10 +32,10 @@
 ```
         Caused by: android.view.InflateException: Binary XML file line #0: Error inflating class android.support.design.widget.BottomNavigationView
 ```
-  
+
 - 上面这个报错的特点是 Binary XML file line #0,后面的控件BottomNavigationView找不到相关对象
 
-### fragment 
+### fragment
 - 直接的使用碎片,例如在<fragment>标签中使用name制定类,使用layout制定布局,layout属性不必须,因为那么制定的类就已经会实现布局
 - 定义一个framelayout容器,动态添加fragment布局,replace方法,还有add,remove方法,涉及tag标签
 - fragment 中使用recycleview,传递参数
@@ -43,17 +43,53 @@
 ### recycleview
 - 对item整体监听,有两种考虑   (1) 对整个item的layout布局设置监听 (2) 在adapter中添加一个接口,包含onClick(int position)和onItemClick两个接口方法
 
-### include layout 
+### include layout
 - 写代码测试include中包含layout,在寻找layout中的id的方法,**代码测试**
 
 ### mysql安装
 - apt-get安装方式,sudo apt-get install mysql-server mysql-client
-    - 数据库目录：/var/lib/mysql/ 
-      
+    - 数据库目录：/var/lib/mysql/
+
     - 配置文件：/usr/share/mysql（命令及配置文件） ，/etc/mysql（如：my.cnf）
-      
+
     - 相关命令：/usr/bin(mysqladmin mysqldump等命令) 和/usr/sbin
-      
+
     - 启动脚本：/etc/init.d/mysql（启动脚本文件mysql的目录）
 - mysql的启动,停止,**常用的操作**
 - Java链接mysql数据库[mysql官方Java驱动](https://dev.mysql.com/downloads/connector/j/),Java操作数据库测试,可以看如下[链接](http://www.runoob.com/java/java-mysql-connect.html)
+
+### 用户数据库设计
+#### login_table 服务器 用户信息表
+- 用户注册,插入个人信息,
+- 用户登录,检测信息是否匹配
+
+|id|userId|password|token|imagePath
+|--|--|--|--|--|
+|自增|hash或者md5|密码,md5|验证登录,服务器session生成|用户头像|
+
+#### friend_table 用户好友关系表,用户添加好友的行为,删除好友的行为
+
+|id|userId|friendId|
+|--|--|--|
+|自增|用户id|好友id|
+
+#### message_table 消息表
+
+|userId|friendId|message|MsgDate|MsgTime|
+|--|--|--|--|--|
+|用户id|朋友id|消息|日期|时间点|
+
+#### add_friend_table 请求消息列表,检查是否已经是好友
+
+|userId|friendId|
+|---|---|
+|用户id|朋友id|
+
+### 长连接方案
+- 长连接+心跳
+- http 采用keep alive 实现长连接
+- websocket 实现长连接
+- mqtt实现长连接
+- socket实现长连接 + 心跳包
+- 这里采用socket实现长连接,仅仅因为socket最熟悉.
+
