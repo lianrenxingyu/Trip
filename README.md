@@ -16,7 +16,7 @@
 |okhttp使用总结|http中的header学习**各种header,及其意义**,formbody,requestBody,post,get几种实现方式|
 |编码问题|汉字在网络传输容易出现编码问题,对文字采用URIEncoding.encode(name,"utf-8")的方式编码,解码URIEncoding.decode(name,"utf-8"),通过response.setCharacterEncoding("utf-8")设置返回的response的编码格式是很有必要的,不同的编码格式会影响返回数据的解码.当输入的编码格式字符串不正确时,会发生io.UnsupportedEncodingException|
 |UncaughtExceptionHandler,处理为捕获异常|在application中实现thread中的这个接口,重写方法|
-
+|Md5|md5中每一步骤的意义|
 
 
 

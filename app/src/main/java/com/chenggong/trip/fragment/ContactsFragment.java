@@ -1,4 +1,4 @@
-package com.chenggong.trip.ui;
+package com.chenggong.trip.fragment;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,11 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.chenggong.trip.R;
 import com.chenggong.trip.adapter.ContactsAdapter;
 import com.chenggong.trip.bean.Contact;
+import com.chenggong.trip.ui.SpaceItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;

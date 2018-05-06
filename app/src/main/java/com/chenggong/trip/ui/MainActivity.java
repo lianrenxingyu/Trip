@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.chenggong.trip.R;
+import com.chenggong.trip.fragment.ContactsFragment;
+import com.chenggong.trip.fragment.NewsFragment;
 import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
 
@@ -139,11 +141,16 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_activity_menu,menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.login:
+                LoginActivity.start(MainActivity.this);
+        }
         return super.onOptionsItemSelected(item);
     }
 

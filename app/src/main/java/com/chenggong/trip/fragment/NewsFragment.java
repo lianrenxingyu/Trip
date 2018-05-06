@@ -1,4 +1,4 @@
-package com.chenggong.trip.ui;
+package com.chenggong.trip.fragment;
 
 import android.content.Context;
 import android.net.Uri;
@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.chenggong.trip.R;
 import com.chenggong.trip.adapter.NewsAdapter;
 import com.chenggong.trip.bean.News;
+import com.chenggong.trip.ui.SpaceItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
