@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.chenggong.trip.R;
 import com.chenggong.trip.net.HttpUtil;
 import com.chenggong.trip.util.Logger;
+import com.chenggong.trip.util.StringUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -40,16 +41,17 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //  TODO 检查输入是否符合规范，提交数据，返回登录界面,登录操作,不正确的字符限制和检测
-                String username = et_userName.getText().toString().trim();
-                String first_password = et_first_pwd.getText().toString();
+                final String username = et_userName.getText().toString().trim();
+                final String first_password = et_first_pwd.getText().toString();
                 String second_password = et_second_pwd.getText().toString();
 
                 //密码是否相同
                 if (first_password.equals(second_password)) {
-
+                    //服务器不存储密码
+                    String passwordMD5 = StringUtil.md5(first_password, 16);
                     Map<String, String> map = new HashMap<>();
                     map.put("username", username);
-                    map.put("password", first_password);
+                    map.put("password", passwordMD5);
                     HttpUtil.sendFormRequest(REGISTER_URL, map, new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
@@ -60,11 +62,17 @@ public class RegisterActivity extends BaseActivity {
                         public void onResponse(Call call, Response response) throws IOException {
                             String responseStr = response.body().string();
                             Logger.d(TAG, responseStr);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                                    LoginActivity.start(RegisterActivity.this,username,first_password);
+                                    finish();
+                                }
+                            });
                         }
                     });
-                    Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-                    LoginActivity.start(RegisterActivity.this,username,first_password);
-                    finish();
+
                 } else {
                     //两次密码不同
                     et_first_pwd.setText("");
