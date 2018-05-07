@@ -51,6 +51,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
+    //singltop,singletask启动活动调用此方法
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.hasExtra("name")){
+            et_userName.setText(intent.getStringExtra("name"));
+            et_password.setText(intent.getStringExtra("password"));
+            et_userName.setCursorVisible(false);
+        }
+    }
+
     public static void start(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);

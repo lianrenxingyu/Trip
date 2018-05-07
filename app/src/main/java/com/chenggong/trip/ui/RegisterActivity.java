@@ -2,6 +2,7 @@ package com.chenggong.trip.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,8 @@ import com.chenggong.trip.util.Logger;
 import com.chenggong.trip.util.StringUtil;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +43,7 @@ public class RegisterActivity extends BaseActivity {
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  TODO 检查输入是否符合规范，提交数据，返回登录界面,登录操作,不正确的字符限制和检测
+                //  TODO 检查输入是否符合规范,不正确的字符限制和检测,查询数据库中的userId是否已经存在,不能重复注册
                 final String username = et_userName.getText().toString().trim();
                 final String first_password = et_first_pwd.getText().toString();
                 String second_password = et_second_pwd.getText().toString();
@@ -55,13 +58,23 @@ public class RegisterActivity extends BaseActivity {
                     HttpUtil.sendFormRequest(REGISTER_URL, map, new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
+                            Logger.d(TAG,"注册网络请求失败"+e.getCause().toString());
                             e.printStackTrace();
+                            if(e.getCause() instanceof ConnectException ){
+                                Logger.d(TAG,"网络连接超时,未连接网络");
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(RegisterActivity.this, "网络连接异常", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
                         }
 
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             String responseStr = response.body().string();
-                            Logger.d(TAG, responseStr);
+                            Logger.d(TAG," token  :"+ responseStr);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

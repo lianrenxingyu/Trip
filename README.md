@@ -19,9 +19,8 @@
 |Md5|md5中每一步骤的意义|
 |jdbc驱动找不到|web工程中,jar包要放在根目录webContent的lib包中,[参考](https://blog.csdn.net/benjaminlee1/article/details/62216028)|
 |mysql编码问题|设置数据库默认的编码吗格式为utf-8,[参考](https://blog.csdn.net/liunian_siyu/article/details/53605802),default-character-set已经过时,可以不设置[官网](https://dev.mysql.com/doc/refman/8.0/en/charset-applications.html),[参考](https://blog.csdn.net/zhuoxiong/article/details/7453773),最后要`service mysql restart`重启一下,对于已经建立的数据库可以通过如[官网中命令行操作](https://dev.mysql.com/doc/refman/8.0/en/charset-database.html),改为utf-8,已经存在的数据乱码不会被修正,乱码数据应该清除操作|
-
-
-
+|okhttp3中cookie管理和使用|接收和发送重写两个即可[参考](https://blog.csdn.net/chen19960724/article/details/52355820)|
+|singleTask,singleTop启动模式下,对生命周期,和任务栈的影响|不会调用onCreate方法,会调用onNewIntent方法|
 
 ### toolbar
 - 定义单独的toolbar_layout实现复用效果

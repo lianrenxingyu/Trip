@@ -11,4 +11,5 @@ public class Configure {
     public static String NEWS = "news";
     public static String CONTACTS = "contacts";
     public static String NEAR = "near";
+    public static String token;
 }
