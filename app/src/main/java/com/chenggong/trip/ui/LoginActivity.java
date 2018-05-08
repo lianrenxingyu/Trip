@@ -2,6 +2,7 @@ package com.chenggong.trip.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +12,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.chenggong.trip.MyApplication;
 import com.chenggong.trip.R;
+import com.chenggong.trip.bean.User;
 import com.chenggong.trip.net.HttpUtil;
 import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
@@ -89,7 +92,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 break;
             case R.id.btn_login:
                 // TODO  登录操作,不正确的字符限制和检测
-                String username = et_userName.getText().toString().trim();
+                final String username = et_userName.getText().toString().trim();
                 String password = et_password.getText().toString();
                 String passwordMD5 = StringUtil.md5(password, 16);
 
@@ -100,6 +103,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     @Override
                     public void onFailure(Call call, IOException e) {
                         e.printStackTrace();
+                        //TODO: 此处第一个判断条件有问题
                         if (e.getCause() instanceof SocketTimeoutException || e.getCause() instanceof ConnectException) {
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -121,12 +125,23 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             @Override
                             public void run() {
                                 if (loginResult.equals(Configure.LoginSuccess)) {
+                                    String userId = StringUtil.md5UserId(username);
+                                    Configure.localUser = new User(username, userId);
+
+                                    //存储用户信息到本地
+                                    SharedPreferences sp = MyApplication.getGlobalContext().getSharedPreferences("tripPreferenceFile", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    editor.putString("username", username);
+                                    editor.putString("userId",userId);
+                                    editor.commit();
+
                                     Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                                    MainActivity.start(LoginActivity.this);
+                                    finish();
                                 } else if (loginResult.equals(Configure.LoginFail)) {
                                     Toast.makeText(LoginActivity.this, "账号密码错误", Toast.LENGTH_SHORT).show();
+                                    et_password.setText("");
                                 }
-                                MainActivity.start(LoginActivity.this);
-                                finish();
                             }
                         });
                     }

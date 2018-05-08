@@ -1,5 +1,7 @@
 package com.chenggong.trip.util;
 
+import com.chenggong.trip.bean.User;
+
 /**
  * Created by chenggong on 18-5-1.
  * 配置类
@@ -8,12 +10,17 @@ package com.chenggong.trip.util;
  */
 
 public class Configure {
-    public static String NEWS = "news";
-    public static String CONTACTS = "contacts";
-    public static String NEAR = "near";
+    public final static String NEWS = "news";
+    public final static String CONTACTS = "contacts";
+    public final static String NEAR = "near";
+
     public static String token;
 
+    //登录状态码
     public final static String LoginFail= "0";
     public final static String LoginSuccess= "1";
+
+    //用户
+    public static User localUser;
 
 }

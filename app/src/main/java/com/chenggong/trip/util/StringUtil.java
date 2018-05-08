@@ -11,11 +11,22 @@ import java.security.NoSuchAlgorithmException;
 
 public class StringUtil {
 
+
+    /**
+     * 获取用户userId
+     */
+    public static String md5UserId(String username) {
+        return md5(username, 10);
+    }
+
+    /**
+     * 获取用户Md5格式的password
+     */
+    public static String md5Password(String password){
+        return md5(password,16);
+    }
     /**
      * 返回的是一个32位的md5加密字符串
-     *
-     * @param str
-     * @return
      */
     public static String md5(String str) {
         return md5(str, 32);

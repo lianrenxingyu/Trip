@@ -6,4 +6,9 @@
         android:id="@+id/login"
         android:title="登录"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/addFriend"
+        android:title="添加朋友"
+        app:showAsAction="always"
+        />
 </menu>

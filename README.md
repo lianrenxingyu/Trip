@@ -124,10 +124,13 @@
  3. 服务器返回结果类型:(1)账号密码错误 (2)登录成功 (3)服务器错误
  4. 网络问题
  5. 数据库中查询用户是否存在,密码是否正确
+ 6. 登录后,初始化用户全局信息
+ 7. 登录后,把用户的必要信息保存在本地,持久化保存
  
  
  ### 网络接口
  |操作|request|response|备注|
  |--|--|--|--|
  |注册|username,password|token|token在cookie中返回|
- |登录|username,password|token,登录成功返回:1,登录失败:0|登录状态是字符串类型|
+ |登录|username,password|token,loginResult:1,loginResult:0|登录状态是返回json字符串|
+ |添加好友|userId,friendId|hasFriend:true or false,isMyFriend : true or false,isAddSuccess :true or false|hasFriend 是否存在好友名字,isMyFriend是否已经是我的好友,isAddSuccess好友是否添加成功|

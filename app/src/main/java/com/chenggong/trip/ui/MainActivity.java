@@ -81,9 +81,9 @@ public class MainActivity extends BaseActivity {
 
 
     /**
-     *初始化drawerLayout和toolbar
+     * 初始化drawerLayout和toolbar
      */
-    private void initDrawerAndToolbar(){
+    private void initDrawerAndToolbar() {
 
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
 //        getSupportActionBar().setHomeButtonEnabled(true);
@@ -124,11 +124,11 @@ public class MainActivity extends BaseActivity {
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
-        if (fragment instanceof NewsFragment){
+        if (fragment instanceof NewsFragment) {
             toolbar_title.setText("消息");
-        }else if (fragment instanceof ContactsFragment){
+        } else if (fragment instanceof ContactsFragment) {
             toolbar_title.setText("联系人");
-        }else {
+        } else {
             //todo:附近的人的title
         }
 
@@ -143,15 +143,19 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_activity_menu,menu);
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.login:
                 LoginActivity.start(MainActivity.this);
+                break;
+            case R.id.addFriend:
+                AddFriendActivity.start(MainActivity.this);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -165,8 +169,9 @@ public class MainActivity extends BaseActivity {
             super.onBackPressed();
         }
     }
-    public static void start(Context context){
-        Intent intent = new Intent(context,MainActivity.class);
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
     }
 }
