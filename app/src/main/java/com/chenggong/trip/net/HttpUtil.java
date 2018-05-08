@@ -2,6 +2,7 @@ package com.chenggong.trip.net;
 
 import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
+import com.chenggong.trip.util.TokenUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.CookieHandler;
@@ -44,6 +45,7 @@ public class HttpUtil {
                     Logger.d(TAG,url.toString());
                     if (cookie.name().equals("token")){
                         Configure.token = cookie.value();
+                        TokenUtil.saveToken(cookie.value());
                         Logger.d(TAG,"服务器返回的token值:"+cookie.value());
                     }
                 }

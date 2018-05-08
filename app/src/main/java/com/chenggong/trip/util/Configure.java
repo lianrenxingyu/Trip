@@ -12,4 +12,8 @@ public class Configure {
     public static String CONTACTS = "contacts";
     public static String NEAR = "near";
     public static String token;
+
+    public final static String LoginFail= "0";
+    public final static String LoginSuccess= "1";
+
 }

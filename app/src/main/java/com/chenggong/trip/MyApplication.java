@@ -1,6 +1,7 @@
 package com.chenggong.trip;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.chenggong.trip.util.Logger;
 
@@ -13,15 +14,22 @@ import com.chenggong.trip.util.Logger;
 public class MyApplication extends Application implements Thread.UncaughtExceptionHandler {
 
     private static final String TAG = "MyApplication";
+
+    private static Context context;
     private Thread.UncaughtExceptionHandler mDefaultExceptionHandler;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+        context = (MyApplication)getApplicationContext();
         mDefaultExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
+    public static Context getGlobalContext(){
+        return context;
+    }
     //处理崩溃应用默认重启导致日志被冲洗掉的问题,延迟重启的时间
     @Override
     public void uncaughtException(Thread t, Throwable e) {

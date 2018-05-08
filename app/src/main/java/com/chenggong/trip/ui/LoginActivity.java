@@ -7,13 +7,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.chenggong.trip.R;
 import com.chenggong.trip.net.HttpUtil;
 import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
+import com.chenggong.trip.util.StringUtil;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +50,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         tv_register.setOnClickListener(this);
         btn_login.setOnClickListener(this);
 
-        if (getIntent().hasExtra("name")){
+        if (getIntent().hasExtra("name")) {
             et_userName.setText(getIntent().getStringExtra("name"));
             et_password.setText(getIntent().getStringExtra("password"));
             et_userName.setCursorVisible(false);
@@ -55,7 +61,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent.hasExtra("name")){
+        if (intent.hasExtra("name")) {
             et_userName.setText(intent.getStringExtra("name"));
             et_password.setText(intent.getStringExtra("password"));
             et_userName.setCursorVisible(false);
@@ -83,22 +89,46 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 break;
             case R.id.btn_login:
                 // TODO  登录操作,不正确的字符限制和检测
-                String userName = et_userName.getText().toString().trim();
+                String username = et_userName.getText().toString().trim();
                 String password = et_password.getText().toString();
-                Map<String, String> map = new HashMap<>();
+                String passwordMD5 = StringUtil.md5(password, 16);
 
-                map.put("userName", userName);
-                map.put("password", password);
+                Map<String, String> map = new HashMap<>();
+                map.put("username", username);
+                map.put("password", passwordMD5);
                 HttpUtil.sendFormRequest(LOGIN_URL, map, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                        if (e.getCause() instanceof SocketTimeoutException || e.getCause() instanceof ConnectException) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
 
+                                    Toast.makeText(LoginActivity.this, "网络连接异常", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         String responseStr = response.body().string();
                         Logger.d(TAG, responseStr);
+                        JSONObject object = JSON.parseObject(responseStr);
+                        final String loginResult = object.getString("loginResult");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (loginResult.equals(Configure.LoginSuccess)) {
+                                    Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                                } else if (loginResult.equals(Configure.LoginFail)) {
+                                    Toast.makeText(LoginActivity.this, "账号密码错误", Toast.LENGTH_SHORT).show();
+                                }
+                                MainActivity.start(LoginActivity.this);
+                                finish();
+                            }
+                        });
                     }
                 });
                 break;
