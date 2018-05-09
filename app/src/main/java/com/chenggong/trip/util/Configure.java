@@ -10,6 +10,8 @@ import com.chenggong.trip.bean.User;
  */
 
 public class Configure {
+
+    private Configure(){};
     public final static String NEWS = "news";
     public final static String CONTACTS = "contacts";
     public final static String NEAR = "near";

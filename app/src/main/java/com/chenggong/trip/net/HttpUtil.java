@@ -5,8 +5,8 @@ import com.chenggong.trip.util.Logger;
 import com.chenggong.trip.util.TokenUtil;
 
 import java.io.UnsupportedEncodingException;
-import java.net.CookieHandler;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +20,8 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
+import static com.chenggong.trip.util.Configure.token;
+
 /**
  * Created by chenggong on 18-5-5.
  *
@@ -29,6 +31,7 @@ import okhttp3.Request;
 public class HttpUtil {
 
     private static final String TAG = "HttpUtil";
+
     /**
      * 发送表单数据formbody数据,单独拿出一个方法好坏有待考虑
      *
@@ -40,13 +43,15 @@ public class HttpUtil {
         CookieJar cookieJar = new CookieJar() {
             @Override
             public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-                for (Cookie cookie:cookies){
-                    Logger.d(TAG,cookie.value());
-                    Logger.d(TAG,url.toString());
-                    if (cookie.name().equals("token")){
-                        Configure.token = cookie.value();
+                for (Cookie cookie : cookies) {
+                    Logger.d(TAG, cookie.value());
+                    Logger.d(TAG, url.toString());
+                    Logger.d(cookie.name(), "domain : " + cookie.domain() + " maxage:  " + cookie.expiresAt()
+                            + " path: " + cookie.path() + " secure: " + cookie.secure());
+                    if (cookie.name().equals("token")) {
+                        token = cookie.value();
                         TokenUtil.saveToken(cookie.value());
-                        Logger.d(TAG,"服务器返回的token值:"+cookie.value());
+                        Logger.d(TAG, "服务器返回的token值:" + cookie.value());
                     }
                 }
             }
@@ -79,8 +84,10 @@ public class HttpUtil {
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("content-type", "text/plain;charset=utf-8")
+                .addHeader("token", Configure.token == null ? "" : Configure.token)//如果Configure.token为null,则传递空字符串""
                 .post(formBody)
                 .build();
         client.newCall(request).enqueue(callback);
     }
+
 }

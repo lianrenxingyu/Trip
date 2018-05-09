@@ -66,6 +66,17 @@
 - mysql的启动,停止,**常用的操作**
 - Java链接mysql数据库[mysql官方Java驱动](https://dev.mysql.com/downloads/connector/j/),Java操作数据库测试,可以看如下[链接](http://www.runoob.com/java/java-mysql-connect.html)
 
+### okhttp
+- 传递数据的方式 header,cookie,formbody,requestBody
+- header 可以传递键值对数据,通常具有通用的的键值对形式,也可以自定义,常用的例如:content-type,set-cookie.相应中可以getheader获取传递的数据,*需要学习header设计目的,等待查阅,不应该是传递数据的*
+- cookie 浏览器中的常用格式,传递键值对,okhttp具有自动管理,不过domain,path等属性不清楚用途,对于cookie的正确用法存疑
+- formbody 在http请求中传递键值对数据,也可以叫做表单,是requestBody的子类
+- requestBody 传递所有的数据
+
+
+
+
+
 ### 用户数据库设计
 #### user_table 服务器 用户信息表
 - 用户注册,插入个人信息,
@@ -104,10 +115,15 @@
 
 ### app 的缺点,要考虑的问题
 - token 存储在本地本身具有危险性,token本身安全问题
+- 没有监听网络状态,无网络情况完全没有考虑
+- 添加好友,直接双向好友通过
+- 数据库选择不合适,关系型数据库不适合即时通讯app
 
 ### app设计点
 - 服务器不存储密码,md5加密
 - token:服务器应该返回token和时间戳,时间戳用来设置token过期时间,本地保存token加密方式,token加密保存
+- 什么时候检查用户身份,启动时候不能立刻检查用户身份,因为如果用户网络不存在,则无法启动,而且不能不让用户在没有网络时不能使用app.又网络和没有网络的情况应该进行考虑.没有网络应该禁止用户的一切网络操作
+- 网络状态监听,是app的基础模块,应用应该实时进行网络监听.
 
 #### 注册过程设计,注意点
  1. 密码存储,服务器不存储密码,不明文存储密码,存储md5值
@@ -127,8 +143,11 @@
  6. 登录后,初始化用户全局信息
  7. 登录后,把用户的必要信息保存在本地,持久化保存
  
+#### 添加好友
+ 1. 检查已经注册的用户中是否存在好友
+ 2. 检查是否已经是好友关系,不能重复注册
  
- ### 网络接口
+### 网络接口
  |操作|request|response|备注|
  |--|--|--|--|
  |注册|username,password|token|token在cookie中返回|

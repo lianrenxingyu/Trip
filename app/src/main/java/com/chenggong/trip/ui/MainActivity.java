@@ -150,9 +150,6 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.login:
-                LoginActivity.start(MainActivity.this);
-                break;
             case R.id.addFriend:
                 AddFriendActivity.start(MainActivity.this);
                 break;

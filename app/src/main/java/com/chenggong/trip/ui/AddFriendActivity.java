@@ -61,6 +61,7 @@ public class AddFriendActivity extends BaseActivity {
                     public void onResponse(Call call, Response response) throws IOException {
                         String responseStr = response.body().string();
                         Logger.d(TAG,responseStr);
+                        //todo 添加好友情况
                     }
                 });
             }
