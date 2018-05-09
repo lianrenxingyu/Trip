@@ -153,3 +153,4 @@
  |注册|username,password|token|token在cookie中返回|
  |登录|username,password|token,loginResult:1,loginResult:0|登录状态是返回json字符串|
  |添加好友|userId,friendId|hasFriend:true or false,isMyFriend : true or false,isAddSuccess :true or false|hasFriend 是否存在好友名字,isMyFriend是否已经是我的好友,isAddSuccess好友是否添加成功|
+ |检查身份,身份认证|token|isLogin:true,false|
