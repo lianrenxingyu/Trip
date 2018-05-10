@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.chenggong.trip.R;
 import com.chenggong.trip.fragment.ContactsFragment;
 import com.chenggong.trip.fragment.NewsFragment;
+import com.chenggong.trip.net.SocketUtil;
 import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
 
@@ -43,6 +44,8 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         initDrawerAndToolbar();
+
+        SocketUtil.startLongConnect();
 
         toolbar_title = findViewById(R.id.toolbar_title);
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -138,6 +141,7 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "onDestroy");
+        SocketUtil.endLongConnect();
     }
 
 

@@ -1,5 +1,19 @@
 package com.chenggong.trip.net;
 
+import android.util.Log;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.Socket;
+import java.nio.charset.Charset;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * Created by chenggong on 18-5-10.
  *
@@ -9,22 +23,150 @@ package com.chenggong.trip.net;
  */
 
 public class SocketUtil {
+
+
     private static final String TAG = "SocketUtil";
 
-    public static void sendMsg(String userId,String name,SendMsgCallback callback){
+    private static Socket client = null;
+
+    private static DataOutputStream output = null;
+    private static DataInputStream input = null;
+
+    private static boolean quitFlag = true;//接收线程循环控制标志
+
+
+    private SocketUtil() {
+    }
+
+    /**
+     * 开始长连接,app开始的时候开启
+     * 请调用{@link #endLongConnect()} 关闭资源
+     * //todo不完善的设计
+     * 如果socket网络连接失败,input,output,client都为空,会使得{@link #receiveMsg(ReceiveCallback)} {@link #sendMsg(String, String, SendMsgCallback)}出现空指针异常
+     */
+    public static void startLongConnect() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    client = new Socket("192.168.43.254", 8080);
+                    client.setSoTimeout(5000);
+                    input = new DataInputStream(client.getInputStream());
+                    output = new DataOutputStream(client.getOutputStream());
+                    Log.d(TAG, TAG + "初始化工作完成");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
     }
 
-    public static void receiveMsg(ReceiveCallback callback){
+    /**
+     * 关闭长连接,app结束的时候关闭
+     */
+    public static void endLongConnect() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    quitFlag = false;
+                    if (input != null) {
+                        input.close();
+                    }
+                    if (output != null) {
+                        output.close();
+                    }
+                    if (client != null) {
+                        client.close();
+                    }
+                    Log.d(TAG, TAG + "关闭完成");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
     }
-    public interface SendMsgCallback{
-        void onResponse();
-        void onFailure();
+
+    public static void sendMsg(final String friendId, final String msg, final SendMsgCallback callback) {
+        int i = 0;
+        if (output == null && i < 3) {
+            startLongConnect();
+            i++;
+        }
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                JSONObject object = new JSONObject();
+                object.put("friendId", friendId);
+                object.put("msg", msg);
+                String jsonStr = JSON.toJSONString(object);
+                try {
+                    if (output == null) {
+                        throw new ConnectException();
+                    }
+                    output.write(jsonStr.getBytes(Charset.forName("utf-8")));
+                    Log.d(TAG, "客户端发送数据");
+                    String s = input.readUTF();
+                    callback.onResponse(s);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(runnable);
+
     }
 
-    public interface ReceiveCallback{
-        void onResponse();
-        void onFailure();
+    /**
+     * 这是一个循环读取输入流的方法,实现了长连接的效果
+     *
+     * @param callback
+     */
+    public static void receiveMsg(final ReceiveCallback callback) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                byte[] bytes = new byte[2048];//一个汉子两个字节,一个字母一个字节,大约能存储1024个汉子,2048个字母
+                int len;
+                while (quitFlag) {
+                    try {
+                        if (input == null) {
+                            throw new ConnectException();
+                        }
+                        len = input.read(bytes);
+                        if (len == -1) {
+                            continue;
+                        }
+                        String msg = new String(bytes, 0, len);
+                        callback.onResponse(msg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+
+    }
+
+    /**
+     * 发送消息回调接口
+     */
+    public interface SendMsgCallback {
+        void onResponse(String msg);
+
+        void onFailure(Exception e);
+    }
+
+    /**
+     * 接收服务器消息回调接口
+     */
+    public interface ReceiveCallback {
+        void onResponse(String msg);
+
+        void onFailure(Exception e);
     }
 }
