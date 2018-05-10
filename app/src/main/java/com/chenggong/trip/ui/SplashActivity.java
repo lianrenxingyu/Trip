@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.chenggong.trip.R;
+import com.chenggong.trip.bean.User;
 import com.chenggong.trip.net.HttpUtil;
 import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
@@ -34,6 +35,10 @@ public class SplashActivity extends BaseActivity {
     private ImageView splashImage;
 
     private String isLogin = "true";
+
+    private String username;
+    private String userId;
+    private String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +67,9 @@ public class SplashActivity extends BaseActivity {
             public void onAnimationEnd(Animator animation) {
 
                 if(isLogin.equals("true")){
+                    Configure.localUser = new User(username,userId);
+                    Configure.token = token;
                     MainActivity.start(SplashActivity.this);
-
                 }else  {
                     LoginActivity.start(SplashActivity.this);
 
@@ -78,9 +84,9 @@ public class SplashActivity extends BaseActivity {
 
     private void initAndGetUserInfo() {
         SharedPreferences sp = getSharedPreferences("tripPreferenceFile", MODE_PRIVATE);
-        String username = sp.getString("username", "");
-        String userId = sp.getString("userId", "");
-        Configure.token = sp.getString("token", "");
+        username = sp.getString("username", "");
+        userId = sp.getString("userId", "");
+        token = sp.getString("token", "");
         if (username.equals("") || userId.equals("") || Configure.token.equals("")) {
             LoginActivity.start(SplashActivity.this);
             Toast.makeText(SplashActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
