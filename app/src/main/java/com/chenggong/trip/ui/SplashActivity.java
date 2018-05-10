@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.chenggong.trip.R;
 import com.chenggong.trip.bean.User;
 import com.chenggong.trip.net.HttpUtil;
+import com.chenggong.trip.net.NetworkUtil;
 import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
 
@@ -83,11 +84,16 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void initAndGetUserInfo() {
+        if(!NetworkUtil.isConnected(SplashActivity.this)){
+            isLogin = "false";
+            Toast.makeText(SplashActivity.this, "网络未连接", Toast.LENGTH_SHORT).show();
+            return;
+        }
         SharedPreferences sp = getSharedPreferences("tripPreferenceFile", MODE_PRIVATE);
         username = sp.getString("username", "");
         userId = sp.getString("userId", "");
         token = sp.getString("token", "");
-        if (username.equals("") || userId.equals("") || Configure.token.equals("")) {
+        if (username.equals("") || userId.equals("") || token.equals("")) {
             LoginActivity.start(SplashActivity.this);
             Toast.makeText(SplashActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
             return;
