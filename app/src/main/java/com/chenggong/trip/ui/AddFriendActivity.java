@@ -69,7 +69,7 @@ public class AddFriendActivity extends BaseActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_back_black);
+        toolbar.setNavigationIcon(R.drawable.ic_back_white);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

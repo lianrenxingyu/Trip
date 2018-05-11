@@ -45,7 +45,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(NewsAdapter.ViewHolder holder, int position) {
-        News news = newsList.get(position);
+        final News news = newsList.get(position);
         holder.tv_name.setText(news.getName());
         holder.tv_brief_msg.setText(news.getBrief_msg());
         holder.tv_time.setText(news.getTime());
@@ -56,7 +56,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 //todo : 打开对话界面
-                ChatActivity.start(context);
+                ChatActivity.start(context,news.getName());
             }
         });
     }

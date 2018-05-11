@@ -21,6 +21,7 @@
 |mysql编码问题|设置数据库默认的编码吗格式为utf-8,[参考](https://blog.csdn.net/liunian_siyu/article/details/53605802),default-character-set已经过时,可以不设置[官网](https://dev.mysql.com/doc/refman/8.0/en/charset-applications.html),[参考](https://blog.csdn.net/zhuoxiong/article/details/7453773),最后要`service mysql restart`重启一下,对于已经建立的数据库可以通过如[官网中命令行操作](https://dev.mysql.com/doc/refman/8.0/en/charset-database.html),改为utf-8,已经存在的数据乱码不会被修正,乱码数据应该清除操作|
 |okhttp3中cookie管理和使用|接收和发送重写两个即可[参考](https://blog.csdn.net/chen19960724/article/details/52355820)|
 |singleTask,singleTop启动模式下,对生命周期,和任务栈的影响|不会调用onCreate方法,会调用onNewIntent方法|
+|聊天界面中,右侧布局使用relativeLayout,使用LinearLayout需要使用gravity = right ,然后会出现奇怪的错误,textview过长会溢出左侧边界,溢出长度为textview右侧控件的长度,不知道原因||
 
 ### toolbar
 - 定义单独的toolbar_layout实现复用效果
@@ -152,6 +153,11 @@
 #### 添加好友
  1. 检查已经注册的用户中是否存在好友
  2. 检查是否已经是好友关系,不能重复注册
+ 3. 本地数据库存储好友信息
+
+#### 发送消息
+ 1. 一个消息体要包含那些信息,朋友姓名,id,自己姓名,id,消息,日期这些那些是必要的,那些是不必要的.
+ 2. 消息的本地存储
  
 ### 网络接口
  |操作|request|response|备注|

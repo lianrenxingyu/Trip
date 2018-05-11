@@ -4,7 +4,7 @@
     android:id="@+id/news_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="4dp">
+    android:background="@drawable/click_background">
 
     <ImageView
         android:id="@+id/iv_head_image"
