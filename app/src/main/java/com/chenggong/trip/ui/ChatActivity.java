@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chenggong.trip.R;
 import com.chenggong.trip.adapter.ChatAdapter;
@@ -55,17 +56,33 @@ public class ChatActivity extends BaseActivity {
 
         toolbar_title.setText(getIntent().getStringExtra("name"));
 
+        tv_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (et_message.getText().toString().equals("")){
+                    Toast.makeText(ChatActivity.this, "不能发送空消息", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Message msg = new Message(toolbar_title.getText().toString(), et_message.getText().toString(), "right");
+                msgList.add(msg);
+                adapter.notifyItemInserted(msgList.size()-1);
+                recycler_chat.smoothScrollToPosition(msgList.size()-1);
+                et_message.setText("");
+            }
+        });
         init();
-        LinearLayoutManager linearLayout = new LinearLayoutManager(this);
-        recycler_chat.setLayoutManager(linearLayout);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        recycler_chat.setLayoutManager(layoutManager);
         adapter = new ChatAdapter(this,msgList);
         recycler_chat.setAdapter(adapter);
+        recycler_chat.scrollToPosition(msgList.size()-1);
 
     }
 
     private  void init (){
-        Message msgleft = new Message(toolbar_title.getText().toString(),"msgdksklfjlsjflkdsjlfkj拉了福利卡记录卡飞机","left");
-        Message msgright = new Message(toolbar_title.getText().toString(),"考虑对方就撒了会计法肯定撒娇离开房间爱上法拉多少空间里看风景爱上机","right");
+        Message msgleft = new Message(toolbar_title.getText().toString(),"拉了福利卡记录卡飞机","left");
+        Message msgright = new Message(toolbar_title.getText().toString(),"考减肥的路上咖啡机","right");
         for(int i = 0;i<10;i++ ){
             msgList.add(msgleft);
             msgList.add(msgright);
