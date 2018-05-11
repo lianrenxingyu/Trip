@@ -1,9 +1,9 @@
 package com.chenggong.trip.net;
 
-import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.chenggong.trip.util.Logger;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -53,7 +53,7 @@ public class SocketUtil {
                     client.setSoTimeout(5000);
                     input = new DataInputStream(client.getInputStream());
                     output = new DataOutputStream(client.getOutputStream());
-                    Log.d(TAG, TAG + "初始化工作完成");
+                    Logger.d(TAG, TAG + "初始化工作完成");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -80,7 +80,7 @@ public class SocketUtil {
                     if (client != null) {
                         client.close();
                     }
-                    Log.d(TAG, TAG + "关闭完成");
+                    Logger.d(TAG, TAG + "关闭完成");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -107,7 +107,7 @@ public class SocketUtil {
                         throw new ConnectException();
                     }
                     output.write(jsonStr.getBytes(Charset.forName("utf-8")));
-                    Log.d(TAG, "客户端发送数据");
+                    Logger.d(TAG, "客户端发送数据");
                     String s = input.readUTF();
                     callback.onResponse(s);
                 } catch (IOException e) {

@@ -45,7 +45,7 @@ public class MainActivity extends BaseActivity {
 
         initDrawerAndToolbar();
 
-        SocketUtil.startLongConnect();
+        SocketUtil.startLongConnect();//打开一个网络长连接
 
         toolbar_title = findViewById(R.id.toolbar_title);
         bottomNavigation = findViewById(R.id.bottom_navigation);

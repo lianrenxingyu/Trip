@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,6 +16,9 @@ import android.widget.Toast;
 import com.chenggong.trip.R;
 import com.chenggong.trip.adapter.ChatAdapter;
 import com.chenggong.trip.bean.Message;
+import com.chenggong.trip.net.SocketUtil;
+import com.chenggong.trip.util.Logger;
+import com.chenggong.trip.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,8 @@ import java.util.List;
  */
 public class ChatActivity extends BaseActivity {
 
+    private static final String TAG = "ChatActivity";
+
     private Toolbar toolbar ;
     private TextView toolbar_title;
     private TextView tv_send;
@@ -31,6 +37,8 @@ public class ChatActivity extends BaseActivity {
     private RecyclerView recycler_chat;
     private ChatAdapter adapter ;
     private List<Message> msgList = new ArrayList<>();
+
+    private String friendName;
 
 
     @Override
@@ -55,6 +63,7 @@ public class ChatActivity extends BaseActivity {
         });
 
         toolbar_title.setText(getIntent().getStringExtra("name"));
+        friendName = getIntent().getStringExtra("name");
 
         tv_send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,11 +72,23 @@ public class ChatActivity extends BaseActivity {
                     Toast.makeText(ChatActivity.this, "不能发送空消息", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Message msg = new Message(toolbar_title.getText().toString(), et_message.getText().toString(), "right");
+                Message msg = new Message(friendName, et_message.getText().toString(), "right");
                 msgList.add(msg);
                 adapter.notifyItemInserted(msgList.size()-1);
                 recycler_chat.smoothScrollToPosition(msgList.size()-1);
                 et_message.setText("");
+                SocketUtil.sendMsg(StringUtil.md5UserId(friendName), msg.getMsg(), new SocketUtil.SendMsgCallback() {
+                    @Override
+                    public void onResponse(String msg) {
+                        Logger.d(TAG,msg);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                //todo 把自己发送的数据存入本地数据库
             }
         });
         init();

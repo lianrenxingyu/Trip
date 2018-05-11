@@ -11,4 +11,6 @@
     <color name="Blue">#3333FF</color>
     <color name="Black">#000000</color>
     <color name="lightGreen">#BCEB3C</color>
+    <color name="msgBackground">#C7E78B</color>
+
 </resources>
