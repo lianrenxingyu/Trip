@@ -74,6 +74,7 @@ public class SocketUtil {
             @Override
             public void run() {
                 try {
+                    sendMsg("1","0",null);
                     quitFlag = false;
                     if (input != null) {
                         input.close();
