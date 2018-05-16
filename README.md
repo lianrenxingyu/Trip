@@ -114,8 +114,15 @@
 - socket实现长连接 + 心跳包
 - 这里采用socket实现长连接,仅仅因为socket最熟悉.
 #### 长连接的具体实现
- 1.每次开启app,建立一个和服务器的socket连接,并且长期持有输入流,输出流,到关闭app的时候关闭输入输出流和socket连接
+ 1.每次开启app,建立一个和服务器的socket连接,建立socket连接后.并且长期持有输入流,输出流,到关闭app的时候关闭输入输出流和socket连接
  2.客户端通过循环等待read输入流的方式,等待消息到来
+ 3. setSoTimeout    `public void setSoTimeout(int timeout)`    `throws SocketException` [详见](http://cuisuqiang.iteye.com/blog/1725348)
+    - 启用/禁用带有指定超时值的 SO_TIMEOUT，以毫秒为单位。将此选项设为非零的超时值时，在与此 Socket 关联的 InputStream 上调用 read() 将只阻塞此时间长度。  
+    - 如果超过超时值，将引发 java.net.SocketTimeoutException，虽然 Socket 仍旧有效。选项必须在进入阻塞操作前被启用才能生效。  
+ 4. 长连接,要考虑服务端的退出机制,因为客户端掉线后,服务端socket连接可能在阻塞等待,不会直接主动关闭.
+    - 如果客户端网络正常,退出时应该通知服务端关闭处理线程,或者通过上线下线标志关闭线程
+    - 如果客户端不正常,比如突然断网,没有机会向服务端发送数据,服务端应该有主动关闭机制,可以超过一定时长关闭,也可以经过网络探测关闭.
+ 5. 建立socket连接后,客户端通知服务器用户上线(发送一个标志),同时服务器初始化,输入流阻塞等待,输出流检查数据库返回数据.
 
 ### app 的缺点,要考虑的问题
 - token 存储在本地本身具有危险性,token本身安全问题
@@ -159,6 +166,9 @@
 #### 发送消息
  1. 一个消息体要包含那些信息,朋友姓名,id,自己姓名,id,消息,日期这些那些是必要的,那些是不必要的.
  2. 消息的本地存储
+ 3. 用户是否在线状态是一个重要的标志,表明用户能否接收消息
+ 4. 用户打开app后,需要向服务器发送一个空消息,与服务器建立长连接.
+ 5. 消息的时间考虑,应该用服务端接收的到时间,还是客户端发送的时间
  
 ### 网络接口
  |操作|request|response|备注|
@@ -167,3 +177,7 @@
  |登录|username,password|token,loginResult:1,loginResult:0|登录状态是返回json字符串|
  |添加好友|userId,friendId|hasFriend:true or false,isMyFriend : true or false,isAddSuccess :true or false|hasFriend 是否存在好友名字,isMyFriend是否已经是我的好友,isAddSuccess好友是否添加成功|
  |检查身份,身份认证|token|isLogin:true,false|
+ |发送消息|userId,friendId,msg,date,time|||
+ |接收消息|friendId,msg,date,time|
+ |客户端上线,通知服务端初始化接口|friendId = 0,msg = 0,userId||用户的在线状态应该存储到数据库|
+ |客户端下线,通知服务端关闭接口,停止线程|friendId = 1,msg = 0,userId||用户的在线状态应该存储到数据库|

@@ -40,6 +40,7 @@ public class SplashActivity extends BaseActivity {
     private String username;
     private String userId;
     private String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,11 +68,12 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
 
-                if(isLogin.equals("true")){
-                    Configure.localUser = new User(username,userId);
+                if (isLogin.equals("true")) {
+                    Configure.localUser = new User(username, userId);
                     Configure.token = token;
                     MainActivity.start(SplashActivity.this);
-                }else  {
+                } else {
+                    Configure.token = null;
                     LoginActivity.start(SplashActivity.this);
 
                 }
@@ -84,7 +86,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void initAndGetUserInfo() {
-        if(!NetworkUtil.isConnected(SplashActivity.this)){
+        if (!NetworkUtil.isConnected(SplashActivity.this)) {
             isLogin = "false";
             Toast.makeText(SplashActivity.this, "网络未连接", Toast.LENGTH_SHORT).show();
             return;
@@ -93,8 +95,9 @@ public class SplashActivity extends BaseActivity {
         username = sp.getString("username", "");
         userId = sp.getString("userId", "");
         token = sp.getString("token", "");
+        Configure.token = token;
         if (username.equals("") || userId.equals("") || token.equals("")) {
-            LoginActivity.start(SplashActivity.this);
+            isLogin = "false";
             Toast.makeText(SplashActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
             return;
         }

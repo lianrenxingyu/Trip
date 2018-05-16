@@ -24,7 +24,7 @@ public class TokenUtil {
     public static void saveToken(String token) {
         SharedPreferences sp = MyApplication.getGlobalContext().getSharedPreferences("tripPreferenceFile", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        //清楚原有的token
+        //清除原有的token
         if (sp.contains("token")) {
             editor.remove("token");
         }

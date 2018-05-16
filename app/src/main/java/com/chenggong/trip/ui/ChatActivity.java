@@ -79,16 +79,11 @@ public class ChatActivity extends BaseActivity {
                 et_message.setText("");
                 SocketUtil.sendMsg(StringUtil.md5UserId(friendName), msg.getMsg(), new SocketUtil.SendMsgCallback() {
                     @Override
-                    public void onResponse(String msg) {
-                        Logger.d(TAG,msg);
-                    }
-
-                    @Override
                     public void onFailure(Exception e) {
-                        e.printStackTrace();
+                        //todo 发送数据出现错误操作
                     }
                 });
-                //todo 把自己发送的数据存入本地数据库
+                //todo 把自己发送的数据存入本地数据库,检查是否有网络,发送成功
             }
         });
         init();

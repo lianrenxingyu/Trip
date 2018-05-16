@@ -1,8 +1,11 @@
 package com.chenggong.trip.net;
 
 
+import android.support.annotation.Nullable;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
 
 import java.io.DataInputStream;
@@ -18,8 +21,8 @@ import java.util.concurrent.Executors;
  * Created by chenggong on 18-5-10.
  *
  * @author chenggong
- *
- * 主要用于实时聊天的消息发送,接收的相关网络功能
+ *         <p>
+ *         主要用于实时聊天的消息发送,接收的相关网络功能
  */
 
 public class SocketUtil {
@@ -49,10 +52,11 @@ public class SocketUtil {
             @Override
             public void run() {
                 try {
-                    client = new Socket("192.168.43.254", 8080);
+                    client = new Socket("192.168.43.254", 8081);
                     client.setSoTimeout(5000);
                     input = new DataInputStream(client.getInputStream());
                     output = new DataOutputStream(client.getOutputStream());
+                    sendMsg("0", "0", null);
                     Logger.d(TAG, TAG + "初始化工作完成");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -89,7 +93,7 @@ public class SocketUtil {
 
     }
 
-    public static void sendMsg(final String friendId, final String msg, final SendMsgCallback callback) {
+    public static void sendMsg(final String friendId, final String msg, @Nullable final SendMsgCallback callback) {
         int i = 0;
         if (output == null && i < 3) {
             startLongConnect();
@@ -99,6 +103,7 @@ public class SocketUtil {
             @Override
             public void run() {
                 JSONObject object = new JSONObject();
+                object.put("userId", Configure.localUser.getUserId());
                 object.put("friendId", friendId);
                 object.put("msg", msg);
                 String jsonStr = JSON.toJSONString(object);
@@ -108,10 +113,11 @@ public class SocketUtil {
                     }
                     output.write(jsonStr.getBytes(Charset.forName("utf-8")));
                     Logger.d(TAG, "客户端发送数据");
-                    String s = input.readUTF();
-                    callback.onResponse(s);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    if (callback != null) {
+                        callback.onFailure(e);
+                    }
                 }
             }
         };
@@ -135,8 +141,10 @@ public class SocketUtil {
                 while (quitFlag) {
                     try {
                         if (input == null) {
+                            Thread.sleep(1000);//等待初始化工作
                             throw new ConnectException();
                         }
+                        Thread.sleep(2000);
                         len = input.read(bytes);
                         if (len == -1) {
                             continue;
@@ -144,6 +152,8 @@ public class SocketUtil {
                         String msg = new String(bytes, 0, len);
                         callback.onResponse(msg);
                     } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
@@ -153,11 +163,9 @@ public class SocketUtil {
     }
 
     /**
-     * 发送消息回调接口
+     * 发送消息回调接口,没有使用
      */
     public interface SendMsgCallback {
-        void onResponse(String msg);
-
         void onFailure(Exception e);
     }
 

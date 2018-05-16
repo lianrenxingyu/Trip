@@ -46,6 +46,17 @@ public class MainActivity extends BaseActivity {
         initDrawerAndToolbar();
 
         SocketUtil.startLongConnect();//打开一个网络长连接
+        SocketUtil.receiveMsg(new SocketUtil.ReceiveCallback() {
+            @Override
+            public void onResponse(String msg) {
+                Logger.d(TAG,"收到的消息"+msg);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
 
         toolbar_title = findViewById(R.id.toolbar_title);
         bottomNavigation = findViewById(R.id.bottom_navigation);
