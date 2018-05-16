@@ -53,7 +53,7 @@ public class SocketUtil {
             public void run() {
                 try {
                     client = new Socket("192.168.43.254", 8081);
-                    client.setSoTimeout(5000);
+                    //client.setSoTimeout(5000); //不设定阻塞时间,使得read一直阻塞
                     input = new DataInputStream(client.getInputStream());
                     output = new DataOutputStream(client.getOutputStream());
                     sendMsg("0", "0", null);
@@ -74,7 +74,6 @@ public class SocketUtil {
             @Override
             public void run() {
                 try {
-                    sendMsg("1","0",null);
                     quitFlag = false;
                     if (input != null) {
                         input.close();
@@ -137,15 +136,17 @@ public class SocketUtil {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Logger.d(TAG,"准备接收初始化数据");
                 byte[] bytes = new byte[2048];//一个汉子两个字节,一个字母一个字节,大约能存储1024个汉子,2048个字母
                 int len;
+                quitFlag = true;//线程被启动,赋值为true
                 while (quitFlag) {
+                    Logger.d(TAG,"消息接收线程在循环");
                     try {
                         if (input == null) {
-                            Thread.sleep(1000);//等待初始化工作
+                            Thread.sleep(2000);//等待初始化工作
                             throw new ConnectException();
                         }
-                        Thread.sleep(2000);
                         len = input.read(bytes);
                         if (len == -1) {
                             continue;

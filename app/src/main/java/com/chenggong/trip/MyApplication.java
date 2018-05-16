@@ -3,7 +3,10 @@ package com.chenggong.trip;
 import android.app.Application;
 import android.content.Context;
 
+import com.chenggong.trip.db.bean.MyObjectBox;
 import com.chenggong.trip.util.Logger;
+
+import io.objectbox.BoxStore;
 
 /**
  * Created by chenggong on 18-5-6.
@@ -18,6 +21,7 @@ public class MyApplication extends Application implements Thread.UncaughtExcepti
     private static Context context;
     private Thread.UncaughtExceptionHandler mDefaultExceptionHandler;
 
+    private BoxStore boxStore;
 
     @Override
     public void onCreate() {
@@ -25,6 +29,14 @@ public class MyApplication extends Application implements Thread.UncaughtExcepti
         context = (MyApplication)getApplicationContext();
         mDefaultExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);
+
+        //数据库初始化
+        boxStore = MyObjectBox.builder().androidContext(this).build();
+
+    }
+
+    public BoxStore getBoxStore(){
+        return boxStore;
     }
 
     public static Context getGlobalContext(){

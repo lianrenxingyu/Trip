@@ -24,6 +24,8 @@ import com.chenggong.trip.net.SocketUtil;
 import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
 
+import org.json.JSONObject;
+
 /**
  * @author chenggong
  */
@@ -45,18 +47,6 @@ public class MainActivity extends BaseActivity {
 
         initDrawerAndToolbar();
 
-        SocketUtil.startLongConnect();//打开一个网络长连接
-        SocketUtil.receiveMsg(new SocketUtil.ReceiveCallback() {
-            @Override
-            public void onResponse(String msg) {
-                Logger.d(TAG,"收到的消息"+msg);
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-
-            }
-        });
 
         toolbar_title = findViewById(R.id.toolbar_title);
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -89,8 +79,25 @@ public class MainActivity extends BaseActivity {
                 return true;
             }
         });
-        Fragment newsFragment = new NewsFragment();//消息界面
+        final Fragment newsFragment = new NewsFragment();//消息界面
         changeFragment(newsFragment);
+
+        /**
+         * 网络操作
+         */
+        SocketUtil.startLongConnect();//打开一个网络长连接
+        SocketUtil.receiveMsg(new SocketUtil.ReceiveCallback() {
+            @Override
+            public void onResponse(String msg) {
+                //todo 收到消息后存入数据库,并且操作界面
+                Logger.d(TAG,"收到的消息"+msg);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
     }
 
 
@@ -150,9 +157,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         Logger.d(TAG, "onDestroy");
         SocketUtil.endLongConnect();
+        super.onDestroy();
     }
 
 

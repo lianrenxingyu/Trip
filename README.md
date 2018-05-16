@@ -1,5 +1,6 @@
 |知识点|内容|
 |-----|----|
+|需求如何,软件文档说明如何写|一个大的,重要的项目,如何写需求,相对较为详细的需求文档,软件文档应该包含那些部分|
 |DrawerLayout|侧滑|
 |toolbar|toolbar的按键设置(返回键,菜单),继承和复用,toolbar的navigation导航按钮设置位置|
 |底部导航视图+fragment|自己实现底部导航视图|
@@ -22,6 +23,15 @@
 |okhttp3中cookie管理和使用|接收和发送重写两个即可[参考](https://blog.csdn.net/chen19960724/article/details/52355820)|
 |singleTask,singleTop启动模式下,对生命周期,和任务栈的影响|不会调用onCreate方法,会调用onNewIntent方法|
 |聊天界面中,右侧布局使用relativeLayout,使用LinearLayout需要使用gravity = right ,然后会出现奇怪的错误,textview过长会溢出左侧边界,溢出长度为textview右侧控件的长度,不知道原因||
+|socket|服务器如何在检测到客户端关闭时,关闭自身,或者建立新的连接,shutdowninput/output 和 setsotimeout,客户端shutdownoutput,服务端setsotimeout,还有sendUrgentData等|
+|fragment|每个生命周期可以做哪些事情,哪些不能做,不同的fragment操作,例如replace,add等,引发的生命周期变化总结,写博客.fragment与Activity的交互[参考](https://blog.csdn.net/u012702547/article/details/49786417)|
+|线程|无限循环线程,在应用退出的时终止的问题|
+|static |类中的如果静态方法比较多,静态类变量也比较多,可以考虑getInstance**可能这一条毫无道理**,静态变量在应用退出(不是杀死应用)后可能仍然保留在内存中,此时如过有状态标志,很有问题|
+|内存泄露|变量的生命周期,长于Activity的生命周期,内存泄露**需要一个内存泄露检测工具**,学习[static一个内存泄露文章](https://www.cnblogs.com/dongweiq/p/5505167.html)[static泄露学习](https://blog.csdn.net/ys408973279/article/details/50389200/)|
+|软件大了之后,就会有一堆bug,然后就会头疼医头,脚疼医脚.一开始的良好的设计,能够减少和避免这些问题的发生||
+|重要的状态位置要加log,出问题后面好查||
+
+
 
 ### toolbar
 - 定义单独的toolbar_layout实现复用效果
@@ -74,7 +84,15 @@
 - formbody 在http请求中传递键值对数据,也可以叫做表单,是requestBody的子类
 - requestBody 传递所有的数据
 
+### socket 和线程
+- 在刚刚建立socket连接,不能在线程里立刻发送消息,因为连接可能还没建立
+- 在刚刚在线程中发送消息,socket不能立刻关闭,两个线程并发,导致发送失败
+### thread,无线循环线程
+- 应用退出后,线程并不会终止,必须要杀死应用进程,线程才会停止,应用退出时,线程状态管理,如何杀死进程
 
+### static 静态变量
+- 另外在activity中按下back键，实际是调用了finish方法，应用退出。虽然应用已经退出，但进程没有被杀死，android中一个应用运行于独立的一个虚拟机实例中，所以在重新启动应用时一个类中的静态对象还保持着运行时的状态，注意在合适位置复位这些状态
+- [参考](https://blog.csdn.net/nihaoqiulinhe/article/details/16822279)
 
 
 
@@ -123,6 +141,7 @@
    (1) 如果客户端网络正常,退出时应该通知服务端关闭处理线程,或者通过上线下线标志关闭线程
    (2) 如果客户端不正常,比如突然断网,没有机会向服务端发送数据,服务端应该有主动关闭机制,可以超过一定时长关闭,也可以经过网络探测关闭.
  5. 建立socket连接后,客户端通知服务器用户上线(发送一个标志),同时服务器初始化,输入流阻塞等待,输出流检查数据库返回数据.
+ 6. socket中的read方法,是一个阻塞等待方法,阻塞时间根据设定timeout 时间,如果没有设定,则一直阻塞等待,根据`len = inputStream.read(bytes)`返回值为-1,如果没有输入流,则直接异常,不会有判定len==-1的机会
 
 ### app 的缺点,要考虑的问题
 - token 存储在本地本身具有危险性,token本身安全问题
@@ -180,4 +199,4 @@
  |发送消息|userId,friendId,msg,date,time|||
  |接收消息|friendId,msg,date,time|
  |客户端上线,通知服务端初始化接口|friendId = 0,msg = 0,userId||用户的在线状态应该存储到数据库|
- |客户端下线,通知服务端关闭接口,停止线程|friendId = 1,msg = 0,userId||用户的在线状态应该存储到数据库|
+ |客户端下线,通知服务端关闭接口,停止线程|friendId = 1,msg = 0,userId||用户的在线状态应该存储到数据库***这个一个是错误使用,socket关闭之前,在线程中并发发送消息,发送肯定失败***|

@@ -1,0 +1,66 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:5260060165207807592",
+      "lastPropertyId": "5:5976506158619128855",
+      "name": "FriendMsg",
+      "properties": [
+        {
+          "id": "1:8498570862647421478",
+          "name": "id"
+        },
+        {
+          "id": "2:3412724685410995607",
+          "name": "friendId"
+        },
+        {
+          "id": "3:5536305509052541677",
+          "name": "msg"
+        },
+        {
+          "id": "4:3645777421874713464",
+          "name": "date"
+        },
+        {
+          "id": "5:5976506158619128855",
+          "name": "time"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:8468980827747322718",
+      "lastPropertyId": "3:4080732216497019152",
+      "name": "Friend",
+      "properties": [
+        {
+          "id": "1:3767104325305482473",
+          "name": "id"
+        },
+        {
+          "id": "2:3147623382656167913",
+          "name": "friendName"
+        },
+        {
+          "id": "3:4080732216497019152",
+          "name": "friendId"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "2:8468980827747322718",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
