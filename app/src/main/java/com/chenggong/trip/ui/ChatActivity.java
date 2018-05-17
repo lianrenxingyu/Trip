@@ -6,10 +6,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,7 +15,6 @@ import com.chenggong.trip.R;
 import com.chenggong.trip.adapter.ChatAdapter;
 import com.chenggong.trip.bean.Message;
 import com.chenggong.trip.net.SocketUtil;
-import com.chenggong.trip.util.Logger;
 import com.chenggong.trip.util.StringUtil;
 
 import java.util.ArrayList;

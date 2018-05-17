@@ -8,30 +8,29 @@ import io.objectbox.annotation.Id;
  *
  * @author chenggong
  */
+
 @Entity
-public class FriendMsg {
+public class HistoryMsg {
 
     @Id
     private long id;
-
     private String friendId;
     private String msg;
     private String date;
     private String time;
 
-    public FriendMsg() {
-
-    }
-    public FriendMsg(String friendId, String msg, String date, String time) {
-        this.friendId = friendId;
-        this.msg = msg;
-        this.date = date;
-        this.time = time;
+    public HistoryMsg() {
     }
 
-
+    public HistoryMsg(FriendMsg friendMsg) {
+        friendId = friendMsg.getFriendId();
+        msg = friendMsg.getMsg();
+        date = friendMsg.getDate();
+        time = friendMsg.getTime();
+    }
 
     public long getId() {
+
         return id;
     }
 

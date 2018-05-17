@@ -13,9 +13,16 @@ public class Friend {
 
     @Id
     private long id;
-
     private String friendName;
     private String friendId;
+
+    public Friend() {
+    }
+
+    public Friend(String friendName, String friendId) {
+        this.friendName = friendName;
+        this.friendId = friendId;
+    }
 
     public long getId() {
         return id;

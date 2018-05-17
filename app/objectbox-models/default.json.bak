@@ -50,37 +50,9 @@
         }
       ],
       "relations": []
-    },
-    {
-      "id": "3:8085955860915387160",
-      "lastPropertyId": "5:4808475665716213708",
-      "name": "HistoryMsg",
-      "properties": [
-        {
-          "id": "1:8916270261641050922",
-          "name": "id"
-        },
-        {
-          "id": "2:7961851235184046232",
-          "name": "friendId"
-        },
-        {
-          "id": "3:1179031431261310966",
-          "name": "msg"
-        },
-        {
-          "id": "4:3467521296685274078",
-          "name": "date"
-        },
-        {
-          "id": "5:4808475665716213708",
-          "name": "time"
-        }
-      ],
-      "relations": []
     }
   ],
-  "lastEntityId": "3:8085955860915387160",
+  "lastEntityId": "2:8468980827747322718",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

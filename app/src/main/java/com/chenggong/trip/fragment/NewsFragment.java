@@ -12,13 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chenggong.trip.MyApplication;
 import com.chenggong.trip.R;
 import com.chenggong.trip.adapter.NewsAdapter;
 import com.chenggong.trip.bean.News;
+import com.chenggong.trip.db.DbHelper;
+import com.chenggong.trip.db.bean.FriendMsg;
 import com.chenggong.trip.ui.SpaceItemDecoration;
+import com.chenggong.trip.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.objectbox.Box;
 
 /**
  * @author chenggong
@@ -35,6 +41,7 @@ import java.util.List;
  */
 public class NewsFragment extends Fragment {
 
+    private static final String TAG = "NewsFragment";
     private OnFragmentInteractionListener mListener;
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recycler_news;
@@ -90,6 +97,9 @@ public class NewsFragment extends Fragment {
             news = new News("名字","我已经到了,我要去那里,我要去那里我要去那里,aaa","11:30","imagePath");
             news.setName("名字"+String.valueOf(i));
             newsList.add(news);
+
+            //数据库初始化
+            DbHelper.addFriend(news.getName());
         }
     }
 
@@ -139,6 +149,19 @@ public class NewsFragment extends Fragment {
     }
 
     public void updateRecycleView(){
-
+        Box<FriendMsg> friendMsgBox = ((MyApplication) getActivity().getApplication()).getBoxStore().boxFor(FriendMsg.class);
+        List<FriendMsg> list = friendMsgBox.query().build().find();
+        for(FriendMsg friendMsg : list){
+            Logger.d(TAG, "消息id,排序 :"+String.valueOf(friendMsg.getId()));
+            String name = DbHelper.getFriendName(friendMsg.getFriendId());
+            for (News news : newsList){
+                if(news.getName().equals(name)){
+                    news.setBrief_msg(friendMsg.getMsg());
+                    news.setTime(friendMsg.getTime());
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
+        Logger.d(TAG,"数据更新");
     }
 }

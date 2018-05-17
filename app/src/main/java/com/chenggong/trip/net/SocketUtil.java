@@ -147,6 +147,7 @@ public class SocketUtil {
                             Thread.sleep(2000);//等待初始化工作
                             throw new ConnectException();
                         }
+                        Thread.sleep(4000);//等待四秒
                         len = input.read(bytes);
                         if (len == -1) {
                             continue;

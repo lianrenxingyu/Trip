@@ -21,27 +21,33 @@ public class MyApplication extends Application implements Thread.UncaughtExcepti
     private static Context context;
     private Thread.UncaughtExceptionHandler mDefaultExceptionHandler;
 
+    private static Application application;
     private BoxStore boxStore;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        context = (MyApplication)getApplicationContext();
+        context = (MyApplication) getApplicationContext();
         mDefaultExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);
-
+        application = this;
         //数据库初始化
         boxStore = MyObjectBox.builder().androidContext(this).build();
 
     }
 
-    public BoxStore getBoxStore(){
+    public BoxStore getBoxStore() {
         return boxStore;
     }
 
-    public static Context getGlobalContext(){
+    public static MyApplication getInstance() {
+        return (MyApplication)application;
+    }
+
+    public static Context getGlobalContext() {
         return context;
     }
+
     //处理崩溃应用默认重启导致日志被冲洗掉的问题,延迟重启的时间
     @Override
     public void uncaughtException(Thread t, Throwable e) {

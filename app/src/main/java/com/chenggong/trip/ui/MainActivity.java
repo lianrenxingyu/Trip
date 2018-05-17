@@ -17,14 +17,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.chenggong.trip.R;
+import com.chenggong.trip.db.DbHelper;
+import com.chenggong.trip.db.bean.FriendMsg;
 import com.chenggong.trip.fragment.ContactsFragment;
 import com.chenggong.trip.fragment.NewsFragment;
 import com.chenggong.trip.net.SocketUtil;
 import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
 
-import org.json.JSONObject;
+import java.util.Iterator;
 
 /**
  * @author chenggong
@@ -58,14 +63,14 @@ public class MainActivity extends BaseActivity {
                     case R.id.navigation_news:
                         if (!navigationType.equals(Configure.NEWS)) {
                             Fragment newsFragment = new NewsFragment();
-                            changeFragment(newsFragment);
+                            changeFragment(newsFragment,"news");
                             navigationType = Configure.NEWS;
                         }
                         break;
                     case R.id.navigation_contact:
                         if (!navigationType.equals(Configure.CONTACTS)) {
                             ContactsFragment contactsFragment = new ContactsFragment();
-                            changeFragment(contactsFragment);
+                            changeFragment(contactsFragment,"contacts");
                             navigationType = Configure.CONTACTS;
                         }
                         break;
@@ -80,7 +85,7 @@ public class MainActivity extends BaseActivity {
             }
         });
         final Fragment newsFragment = new NewsFragment();//消息界面
-        changeFragment(newsFragment);
+        changeFragment(newsFragment,"news");
 
         /**
          * 网络操作
@@ -91,6 +96,21 @@ public class MainActivity extends BaseActivity {
             public void onResponse(String msg) {
                 //todo 收到消息后存入数据库,并且操作界面
                 Logger.d(TAG,"收到的消息"+msg);
+                JSONArray array = JSON.parseArray(msg);
+                Logger.d(TAG,"接收到消息条数"+array.size());
+                Iterator<Object> iterator = array.iterator();
+                while (iterator.hasNext()){
+                    JSONObject object = (JSONObject) iterator.next();
+                    FriendMsg friendMsg = new FriendMsg(object.getString("userId"), object.getString("msg"),
+                            object.getString("date"), object.getString("time"));
+                    DbHelper.addFriendMsg(friendMsg);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((NewsFragment)getSupportFragmentManager().findFragmentByTag("news")).updateRecycleView();
+                        }
+                    });
+                }
             }
 
             @Override
@@ -140,10 +160,10 @@ public class MainActivity extends BaseActivity {
     /**
      * 切换首页的fragment
      */
-    private void changeFragment(Fragment fragment) {
+    private void changeFragment(Fragment fragment,String tag) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+        transaction.replace(R.id.fragment_container, fragment,tag);
         transaction.commit();
         if (fragment instanceof NewsFragment) {
             toolbar_title.setText("消息");
@@ -159,6 +179,8 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         Logger.d(TAG, "onDestroy");
         SocketUtil.endLongConnect();
+
+        DbHelper.clearAllData();//todo 关闭后清除数据不应该,调试用
         super.onDestroy();
     }
 
