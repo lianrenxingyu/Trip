@@ -1,5 +1,6 @@
 package com.chenggong.trip.ui;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -28,8 +31,10 @@ import com.chenggong.trip.fragment.NewsFragment;
 import com.chenggong.trip.net.SocketUtil;
 import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
+import com.chenggong.trip.util.TokenUtil;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author chenggong
@@ -44,6 +49,8 @@ public class MainActivity extends BaseActivity {
     private DrawerLayout drawerLayout;
     private NavigationView drawer_navigation;
     private TextView toolbar_title;
+
+    private Button btn_exit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +70,14 @@ public class MainActivity extends BaseActivity {
                     case R.id.navigation_news:
                         if (!navigationType.equals(Configure.NEWS)) {
                             Fragment newsFragment = new NewsFragment();
-                            changeFragment(newsFragment,"news");
+                            changeFragment(newsFragment, "news");
                             navigationType = Configure.NEWS;
                         }
                         break;
                     case R.id.navigation_contact:
                         if (!navigationType.equals(Configure.CONTACTS)) {
                             ContactsFragment contactsFragment = new ContactsFragment();
-                            changeFragment(contactsFragment,"contacts");
+                            changeFragment(contactsFragment, "contacts");
                             navigationType = Configure.CONTACTS;
                         }
                         break;
@@ -85,7 +92,7 @@ public class MainActivity extends BaseActivity {
             }
         });
         final Fragment newsFragment = new NewsFragment();//消息界面
-        changeFragment(newsFragment,"news");
+        changeFragment(newsFragment, "news");
 
         /**
          * 网络操作
@@ -95,11 +102,11 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onResponse(String msg) {
                 //todo 收到消息后存入数据库,并且操作界面
-                Logger.d(TAG,"收到的消息"+msg);
+                Logger.d(TAG, "收到的消息" + msg);
                 JSONArray array = JSON.parseArray(msg);
-                Logger.d(TAG,"接收到消息条数"+array.size());
+                Logger.d(TAG, "接收到消息条数" + array.size());
                 Iterator<Object> iterator = array.iterator();
-                while (iterator.hasNext()){
+                while (iterator.hasNext()) {
                     JSONObject object = (JSONObject) iterator.next();
                     FriendMsg friendMsg = new FriendMsg(object.getString("userId"), object.getString("msg"),
                             object.getString("date"), object.getString("time"));
@@ -107,7 +114,17 @@ public class MainActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            ((NewsFragment)getSupportFragmentManager().findFragmentByTag("news")).updateRecycleView();
+                            //获取当前Activity名字
+                            ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+                            List<ActivityManager.RunningTaskInfo> forGroundActivity = activityManager.getRunningTasks(1);
+                            ActivityManager.RunningTaskInfo currentActivity;
+                            currentActivity = forGroundActivity.get(0);
+                            String activityName = currentActivity.topActivity.getClassName();
+                            Logger.d("当前Activity名字", activityName);
+                            //如果在主界面,更新ui
+                            if (activityName.equals(MainActivity.class.getName())) {
+                                ((NewsFragment) getSupportFragmentManager().findFragmentByTag("news")).updateRecycleView();
+                            }
                         }
                     });
                 }
@@ -153,6 +170,15 @@ public class MainActivity extends BaseActivity {
                 return true;
             }
         });
+        btn_exit = findViewById(R.id.btn_exit);
+        btn_exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TokenUtil.deleteToken();
+                LoginActivity.start(MainActivity.this);
+                finish();
+            }
+        });
 
     }
 
@@ -160,10 +186,10 @@ public class MainActivity extends BaseActivity {
     /**
      * 切换首页的fragment
      */
-    private void changeFragment(Fragment fragment,String tag) {
+    private void changeFragment(Fragment fragment, String tag) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment,tag);
+        transaction.replace(R.id.fragment_container, fragment, tag);
         transaction.commit();
         if (fragment instanceof NewsFragment) {
             toolbar_title.setText("消息");
@@ -180,7 +206,7 @@ public class MainActivity extends BaseActivity {
         Logger.d(TAG, "onDestroy");
         SocketUtil.endLongConnect();
 
-        DbHelper.clearAllData();//todo 关闭后清除数据不应该,调试用
+//        DbHelper.clearAllData();//todo 关闭后清除数据不应该,调试用
         super.onDestroy();
     }
 

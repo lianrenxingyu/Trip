@@ -24,7 +24,7 @@
 |singleTask,singleTop启动模式下,对生命周期,和任务栈的影响|不会调用onCreate方法,会调用onNewIntent方法|
 |聊天界面中,右侧布局使用relativeLayout,使用LinearLayout需要使用gravity = right ,然后会出现奇怪的错误,textview过长会溢出左侧边界,溢出长度为textview右侧控件的长度,不知道原因||
 |socket|服务器如何在检测到客户端关闭时,关闭自身,或者建立新的连接,shutdowninput/output 和 setsotimeout,客户端shutdownoutput,服务端setsotimeout,还有sendUrgentData等|
-|fragment|每个生命周期可以做哪些事情,哪些不能做,不同的fragment操作,例如replace,add等,引发的生命周期变化总结,写博客.fragment与Activity的交互[参考](https://blog.csdn.net/u012702547/article/details/49786417)|
+|fragment|每个生命周期可以做哪些事情,哪些不能做,不同的fragment操作,例如replace,add等,引发的生命周期变化总结[参考](https://www.cnblogs.com/genggeng/p/6780014.html),写博客.fragment与Activity的交互[参考](https://blog.csdn.net/u012702547/article/details/49786417)|
 |线程|无限循环线程,在应用退出的时终止的问题|
 |static |类中的如果静态方法比较多,静态类变量也比较多,可以考虑getInstance**可能这一条毫无道理**,静态变量在应用退出(不是杀死应用)后可能仍然保留在内存中,此时如过有状态标志,很有问题|
 |内存泄露|变量的生命周期,长于Activity的生命周期,内存泄露**需要一个内存泄露检测工具**,学习[static一个内存泄露文章](https://www.cnblogs.com/dongweiq/p/5505167.html)[static泄露学习](https://blog.csdn.net/ys408973279/article/details/50389200/)|
@@ -168,6 +168,8 @@
  5. 注册后返回登录界面,登录界面launchMode,singleTask,onNewIntent方法
  6. 数据库查询是否已经存在用户,检查用户名,密码格式是否符合规则
  7. 服务器返回结果类型:(1)用户名已经存在 (2)注册成功 (3)注册失败,服务器错误
+ 8. 消息存储数据库设计,如何能够合理的存储.要考虑复现历史消息的时候时间顺序的问题,考虑实时更新新收到的数据.
+ 9. 消息类型应该有一个基类,包括一些基本属性,例如msg,date,time,from,to等
  
 #### 登录过程设计
  1. 每次登录采用密码和用户名登录验证身份,更新服务器token及token时间戳

@@ -17,6 +17,7 @@ import com.chenggong.trip.R;
 import com.chenggong.trip.adapter.NewsAdapter;
 import com.chenggong.trip.bean.News;
 import com.chenggong.trip.db.DbHelper;
+import com.chenggong.trip.db.bean.Friend;
 import com.chenggong.trip.db.bean.FriendMsg;
 import com.chenggong.trip.ui.SpaceItemDecoration;
 import com.chenggong.trip.util.Logger;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.objectbox.Box;
+
+import static com.chenggong.trip.db.DbHelper.getAllFriend;
 
 /**
  * @author chenggong
@@ -87,19 +90,29 @@ public class NewsFragment extends Fragment {
         recycler_news.setLayoutManager(layoutManager);
         recycler_news.addItemDecoration(new SpaceItemDecoration(4,16,16));
         recycler_news.setAdapter(adapter);
+        updateRecycleView();
         return view;
     }
 
     public void initData(){
-//        News news = new News("名字","我已经到了,我要去那里,我要去那里我要去那里","11:30","imagePath");
-        for(int i = 0;i<15;i++){
-            News news ;
-            news = new News("名字","我已经到了,我要去那里,我要去那里我要去那里,aaa","11:30","imagePath");
-            news.setName("名字"+String.valueOf(i));
+////        News news = new News("名字","我已经到了,我要去那里,我要去那里我要去那里","11:30","imagePath");
+//        for(int i = 0;i<15;i++){
+//            News news ;
+//            news = new News("名字","我已经到了,我要去那里,我要去那里我要去那里,aaa","11:30","imagePath");
+//            news.setName("名字"+String.valueOf(i));
+//            newsList.add(news);
+//
+//            //数据库初始化
+//            DbHelper.addFriend(news.getName());
+//        }
+//        News news = new News("chenggong", "简要描述", "11:30", "imagePath");
+//        newsList.add(news);
+//        DbHelper.addFriend(news.getName());
+        List<Friend> friendList = DbHelper.getAllFriend();
+        for (Friend friend : friendList){
+            News news = new News(friend.getFriendName(),"简要描述","11:30","imagePath");
+            newsList.clear();
             newsList.add(news);
-
-            //数据库初始化
-            DbHelper.addFriend(news.getName());
         }
     }
 

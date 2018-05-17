@@ -75,6 +75,7 @@ public class RegisterActivity extends BaseActivity {
                         public void onResponse(Call call, Response response) throws IOException {
                             String responseStr = response.body().string();
                             Logger.d(TAG," token  :"+ responseStr);
+                            //todo 并没有考虑注册失败的情况
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

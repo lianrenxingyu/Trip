@@ -14,7 +14,10 @@ import android.widget.Toast;
 import com.chenggong.trip.R;
 import com.chenggong.trip.adapter.ChatAdapter;
 import com.chenggong.trip.bean.Message;
+import com.chenggong.trip.db.DbHelper;
+import com.chenggong.trip.db.bean.FriendMsg;
 import com.chenggong.trip.net.SocketUtil;
+import com.chenggong.trip.util.Logger;
 import com.chenggong.trip.util.StringUtil;
 
 import java.util.ArrayList;
@@ -27,16 +30,18 @@ public class ChatActivity extends BaseActivity {
 
     private static final String TAG = "ChatActivity";
 
-    private Toolbar toolbar ;
+    private Toolbar toolbar;
     private TextView toolbar_title;
     private TextView tv_send;
     private EditText et_message;
     private RecyclerView recycler_chat;
-    private ChatAdapter adapter ;
+    private ChatAdapter adapter;
     private List<Message> msgList = new ArrayList<>();
 
     private String friendName;
 
+    private boolean flag = true;//线程检测是否有新消息
+    private int msgNum;//消息的数目
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,14 +70,14 @@ public class ChatActivity extends BaseActivity {
         tv_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (et_message.getText().toString().equals("")){
+                if (et_message.getText().toString().equals("")) {
                     Toast.makeText(ChatActivity.this, "不能发送空消息", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Message msg = new Message(friendName, et_message.getText().toString(), "right");
                 msgList.add(msg);
-                adapter.notifyItemInserted(msgList.size()-1);
-                recycler_chat.smoothScrollToPosition(msgList.size()-1);
+                adapter.notifyItemInserted(msgList.size() - 1);
+                recycler_chat.smoothScrollToPosition(msgList.size() - 1);
                 et_message.setText("");
                 SocketUtil.sendMsg(StringUtil.md5UserId(friendName), msg.getMsg(), new SocketUtil.SendMsgCallback() {
                     @Override
@@ -87,23 +92,49 @@ public class ChatActivity extends BaseActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
         recycler_chat.setLayoutManager(layoutManager);
-        adapter = new ChatAdapter(this,msgList);
+        adapter = new ChatAdapter(this, msgList);
         recycler_chat.setAdapter(adapter);
-        recycler_chat.scrollToPosition(msgList.size()-1);
+        recycler_chat.scrollToPosition(msgList.size() - 1);
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                flag = true;
+                while (flag) {
+                    List<FriendMsg> friendMsgList = DbHelper.getFriendMsg(toolbar_title.getText().toString());
+                    if(friendMsgList.size()>msgNum){
+                        init();
+                    }
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
-    private  void init (){
-        Message msgleft = new Message(toolbar_title.getText().toString(),"拉了福利卡记录卡飞机","left");
-        Message msgright = new Message(toolbar_title.getText().toString(),"考减肥的路上咖啡机","right");
-        for(int i = 0;i<10;i++ ){
-            msgList.add(msgleft);
-            msgList.add(msgright);
+    private void init() {
+        List<FriendMsg> friendMsgList = DbHelper.getFriendMsg(toolbar_title.getText().toString());
+        msgNum = friendMsgList.size();
+        for (FriendMsg friendMsg : friendMsgList) {
+            Message msgLeft = new Message(toolbar_title.getText().toString(), friendMsg.getMsg(), "left", friendMsg.getTime(), friendMsg.getDate());
+            msgList.add(msgLeft);
         }
+        Logger.d(TAG, "朋友发来的消息初始化完成");
+        //todo 初始化自己发送的历史消息
     }
-    public static void start(Context context,String name) {
+
+    public static void start(Context context, String name) {
         Intent intent = new Intent(context, ChatActivity.class);
-        intent.putExtra("name",name);
+        intent.putExtra("name", name);
         context.startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        flag = false;
+        super.onDestroy();
     }
 }

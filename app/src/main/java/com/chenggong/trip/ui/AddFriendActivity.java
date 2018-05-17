@@ -8,8 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.chenggong.trip.R;
+import com.chenggong.trip.db.DbHelper;
 import com.chenggong.trip.net.HttpUtil;
 import com.chenggong.trip.util.Configure;
 import com.chenggong.trip.util.Logger;
@@ -36,6 +40,7 @@ public class AddFriendActivity extends BaseActivity {
     private Toolbar toolbar;
     private TextView tv_addFriend;
     private EditText et_friendName;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,11 +51,11 @@ public class AddFriendActivity extends BaseActivity {
         tv_addFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String friendName = et_friendName.getText().toString();
+                final String friendName = et_friendName.getText().toString();
                 String friendId = StringUtil.md5UserId(friendName);
-                Map<String,String> map = new HashMap();
+                Map<String, String> map = new HashMap();
                 map.put("userId", Configure.localUser.getUserId());
-                map.put("friendId",friendId);
+                map.put("friendId", friendId);
                 HttpUtil.sendFormRequest(ADD_FRIEND_URL, map, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
@@ -60,8 +65,34 @@ public class AddFriendActivity extends BaseActivity {
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         String responseStr = response.body().string();
-                        Logger.d(TAG,responseStr);
+                        Logger.d(TAG, responseStr);
                         //todo 添加好友情况
+                        final JSONObject object = JSON.parseObject(responseStr);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                boolean hasFriend = object.getBoolean("hasFriend");
+                                boolean isMyFriend = object.getBoolean("isMyFriend");
+                                boolean isAddSuccess = object.getBoolean("isAddSuccess");
+                                if (!hasFriend){
+                                    Toast.makeText(AddFriendActivity.this, "没有这个账号", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                if (isMyFriend){
+                                    Logger.d(TAG,"服务器中已经存在好友关系");
+                                    if (!DbHelper.isMyFriend(friendName)){
+                                        DbHelper.addFriend(friendName);
+                                    }
+                                    Toast.makeText(AddFriendActivity.this, "已经是好友了,不能添加", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                if(isAddSuccess){
+                                    DbHelper.addFriend(friendName);
+                                    Toast.makeText(AddFriendActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
                     }
                 });
             }

@@ -16,7 +16,7 @@ public class Message {
     private String time;
 
     //todo 日期问题处理
-    private Date date;
+    private String date;
 
     public Message(String friendName, String msg, String type) {
         this.friendName = friendName;
@@ -30,6 +30,14 @@ public class Message {
         this.time = String.valueOf(hour) + ":" + String.valueOf(minute);
     }
 
+    public Message(String friendName, String msg, String type, String time, String date) {
+        this.friendName = friendName;
+        this.msg = msg;
+        this.type = type;
+        this.time = time;
+        this.date = date;
+    }
+
     public String getType() {
         return type;
     }
@@ -37,8 +45,6 @@ public class Message {
     public void setType(String type) {
         this.type = type;
     }
-
-
 
     public String getFriendName() {
         return friendName;
@@ -56,11 +62,11 @@ public class Message {
         this.msg = msg;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

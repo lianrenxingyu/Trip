@@ -34,6 +34,20 @@ public class TokenUtil {
     }
 
     /**
+     * 删除本地token
+     */
+
+    public static void deleteToken() {
+        SharedPreferences sp = MyApplication.getGlobalContext().getSharedPreferences("tripPreferenceFile", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        //清除原有的token
+        if (sp.contains("token")) {
+            editor.remove("token");
+            Logger.d(TAG,"token 已经清除");
+        }
+        editor.commit();
+    }
+    /**
      * 设置token日期
      */
     public static void setDate() {

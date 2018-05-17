@@ -60,6 +60,16 @@
         android:background="@drawable/background"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/header_layout"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/navigation">
+
+        <Button
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="16dp"
+            android:id="@+id/btn_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="退出登录" />
+    </android.support.design.widget.NavigationView>
+
 </android.support.v4.widget.DrawerLayout>
 
