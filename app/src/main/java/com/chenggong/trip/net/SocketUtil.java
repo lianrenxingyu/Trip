@@ -82,6 +82,7 @@ public class SocketUtil {
                         output.close();
                     }
                     if (client != null) {
+                        client.shutdownOutput();
                         client.close();
                     }
                     Logger.d(TAG, TAG + "关闭完成");
@@ -136,6 +137,12 @@ public class SocketUtil {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(2000);//等待四秒,建立连接,等待初始化等待发送
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 Logger.d(TAG,"准备接收初始化数据");
                 byte[] bytes = new byte[2048];//一个汉子两个字节,一个字母一个字节,大约能存储1024个汉子,2048个字母
                 int len;
@@ -147,7 +154,6 @@ public class SocketUtil {
                             Thread.sleep(2000);//等待初始化工作
                             throw new ConnectException();
                         }
-                        Thread.sleep(4000);//等待四秒
                         len = input.read(bytes);
                         if (len == -1) {
                             continue;

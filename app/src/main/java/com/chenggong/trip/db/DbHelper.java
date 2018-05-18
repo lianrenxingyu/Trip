@@ -11,6 +11,8 @@ import com.chenggong.trip.util.StringUtil;
 import java.util.List;
 
 import io.objectbox.Box;
+import io.objectbox.Property;
+import io.objectbox.query.PropertyQuery;
 import okhttp3.internal.Util;
 
 /**
@@ -36,7 +38,7 @@ public class DbHelper {
             return "";
         }
         String name = friendList.get(0).getFriendName();
-        Logger.d(TAG, "朋友名字 : " + name);
+        Logger.d(TAG, "根据朋友id获得朋友名字 : " + name);
         return name;
     }
 
@@ -71,7 +73,7 @@ public class DbHelper {
         Box<Friend> box = MyApplication.getInstance().getBoxStore().boxFor(Friend.class);
         List<Friend> list = box.query().equal(Friend_.friendName, name).build().find();
 
-        return list.size() >0 ;
+        return list.size() > 0;
     }
 
 
@@ -97,6 +99,22 @@ public class DbHelper {
         return list;
     }
 
+    /**
+     * 获得所有的朋友消息,用于展示消息列表
+     *
+     * @return
+     */
+    public static List<FriendMsg> getAllFriendMsg() {
+        Box<FriendMsg> box = MyApplication.getInstance().getBoxStore().boxFor(FriendMsg.class);
+        List<FriendMsg> list = box.query().build().find();
+        return list;
+    }
+
+    public static void clearMsgData() {
+        Box<FriendMsg> msgBox = MyApplication.getInstance().getBoxStore().boxFor(FriendMsg.class);
+        msgBox.removeAll();
+        Logger.d(TAG, "本地数据库中历史消息数据全部删除");
+    }
 
     public static void clearAllData() {
         Box<Friend> box = MyApplication.getInstance().getBoxStore().boxFor(Friend.class);

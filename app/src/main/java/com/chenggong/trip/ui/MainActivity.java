@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -51,6 +52,7 @@ public class MainActivity extends BaseActivity {
     private TextView toolbar_title;
 
     private Button btn_exit;
+    private Button btn_clearMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +103,10 @@ public class MainActivity extends BaseActivity {
         SocketUtil.receiveMsg(new SocketUtil.ReceiveCallback() {
             @Override
             public void onResponse(String msg) {
+
+                /**
+                 *说明:由于可能同时收到多个来自服务端的数组,所以对收到的msg做处理
+                 */
                 //todo 收到消息后存入数据库,并且操作界面
                 Logger.d(TAG, "收到的消息" + msg);
                 JSONArray array = JSON.parseArray(msg);
@@ -122,7 +128,7 @@ public class MainActivity extends BaseActivity {
                             String activityName = currentActivity.topActivity.getClassName();
                             Logger.d("当前Activity名字", activityName);
                             //如果在主界面,更新ui
-                            if (activityName.equals(MainActivity.class.getName())) {
+                            if (((NewsFragment) getSupportFragmentManager().findFragmentByTag("news"))!=null) {
                                 ((NewsFragment) getSupportFragmentManager().findFragmentByTag("news")).updateRecycleView();
                             }
                         }
@@ -177,6 +183,14 @@ public class MainActivity extends BaseActivity {
                 TokenUtil.deleteToken();
                 LoginActivity.start(MainActivity.this);
                 finish();
+            }
+        });
+        btn_clearMsg = findViewById(R.id.btn_clearMsg);
+        btn_clearMsg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DbHelper.clearMsgData();
+                Toast.makeText(MainActivity.this, "历史消息已经删除", Toast.LENGTH_SHORT).show();
             }
         });
 

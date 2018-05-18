@@ -14,7 +14,10 @@ import android.view.ViewGroup;
 import com.chenggong.trip.R;
 import com.chenggong.trip.adapter.ContactsAdapter;
 import com.chenggong.trip.bean.Contact;
+import com.chenggong.trip.db.DbHelper;
+import com.chenggong.trip.db.bean.Friend;
 import com.chenggong.trip.ui.SpaceItemDecoration;
+import com.chenggong.trip.util.Configure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,8 +80,9 @@ public class ContactsFragment extends Fragment {
     }
 
     private void initData() {
-        for (int i = 0;i<15;i++){
-            Contact contact = new Contact("名字"+String.valueOf(i), "昵称", "imagePath");
+        List<Friend> friendList=  DbHelper.getAllFriend();
+        for (Friend friend :friendList){
+            Contact contact = new Contact(friend.getFriendName(), "昵称", "imagePath");
             contactList.add(contact);
         }
     }

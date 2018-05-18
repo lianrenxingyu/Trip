@@ -109,9 +109,9 @@ public class NewsFragment extends Fragment {
 //        newsList.add(news);
 //        DbHelper.addFriend(news.getName());
         List<Friend> friendList = DbHelper.getAllFriend();
+        newsList.clear();
         for (Friend friend : friendList){
             News news = new News(friend.getFriendName(),"简要描述","11:30","imagePath");
-            newsList.clear();
             newsList.add(news);
         }
     }
@@ -162,10 +162,9 @@ public class NewsFragment extends Fragment {
     }
 
     public void updateRecycleView(){
-        Box<FriendMsg> friendMsgBox = ((MyApplication) getActivity().getApplication()).getBoxStore().boxFor(FriendMsg.class);
-        List<FriendMsg> list = friendMsgBox.query().build().find();
+        List<FriendMsg> list = DbHelper.getAllFriendMsg();
         for(FriendMsg friendMsg : list){
-            Logger.d(TAG, "消息id,排序 :"+String.valueOf(friendMsg.getId()));
+            Logger.d(TAG, "消息id :"+String.valueOf(friendMsg.getId()));
             String name = DbHelper.getFriendName(friendMsg.getFriendId());
             for (News news : newsList){
                 if(news.getName().equals(name)){

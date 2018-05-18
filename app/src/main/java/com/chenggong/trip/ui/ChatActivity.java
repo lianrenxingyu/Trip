@@ -96,15 +96,15 @@ public class ChatActivity extends BaseActivity {
         recycler_chat.setAdapter(adapter);
         recycler_chat.scrollToPosition(msgList.size() - 1);
 
+        /**
+         * 通过后台一直运行的线程,实时检查数据库数据,如果有新的数据到来,直接更新界面
+         */
         new Thread(new Runnable() {
             @Override
             public void run() {
                 flag = true;
                 while (flag) {
-                    List<FriendMsg> friendMsgList = DbHelper.getFriendMsg(toolbar_title.getText().toString());
-                    if(friendMsgList.size()>msgNum){
-                        init();
-                    }
+                    addNewMsg();
                     try {
                         Thread.sleep(3000);
                     } catch (InterruptedException e) {
@@ -124,6 +124,29 @@ public class ChatActivity extends BaseActivity {
         }
         Logger.d(TAG, "朋友发来的消息初始化完成");
         //todo 初始化自己发送的历史消息
+    }
+
+    /**
+     * 检查是否有新的数据,并更新{@link #msgList} ,也更新消息界面
+     */
+    private void addNewMsg() {
+        List<FriendMsg> friendMsgList = DbHelper.getFriendMsg(toolbar_title.getText().toString());
+        //如果有更新的消息,添加到列表中
+        if (friendMsgList.size() > msgNum) {
+            for (int i = msgNum; i < friendMsgList.size(); i++) {
+                Message msgLeft = new Message(toolbar_title.getText().toString(), friendMsgList.get(i).getMsg(),
+                        "left", friendMsgList.get(i).getTime(), friendMsgList.get(i).getDate());
+                msgList.add(msgLeft);
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                    recycler_chat.smoothScrollToPosition(msgList.size() - 1);
+                }
+            });
+            msgNum = friendMsgList.size();
+        }
     }
 
     public static void start(Context context, String name) {
