@@ -103,7 +103,7 @@
 - 另外在activity中按下back键，实际是调用了finish方法，应用退出。虽然应用已经退出，但进程没有被杀死，android中一个应用运行于独立的一个虚拟机实例中，所以在重新启动应用时一个类中的静态对象还保持着运行时的状态，注意在合适位置复位这些状态
 - [参考](https://blog.csdn.net/nihaoqiulinhe/article/details/16822279)
 
-<span id = "mysql">哈哈哈</span>
+#### mysql
 ### read函数
 - 是一个阻塞方法,和setsotimeout函数相关,阻塞直到发现文件输入流,直文件结束.阻塞或者抛出异常,**源码**注释第一段很好
 - 如果在调用read(byte)函数的之前,byte不为空,比如已经有一些数据了,读入数据也是是从第0位开始
