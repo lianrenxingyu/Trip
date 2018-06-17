@@ -37,8 +37,9 @@
 |json|json的各种组合方式,以及相应的json解析方案.jsonObject,jsonArray,解析出list,或者jsonObject.|
 |关于注释|标准的Java注释怎么写|
 |通过一个循环的线程,实时检查某种变化|例如收到新的消息,实时的更新界面.应该考虑线程的终止问题,就可能涉及什么时候终止线程,涉及界面的生命周期问题.**监听一个实时的变化的方式**注册,广播可以吗?订阅者,观察者设计模式可以吗?后台service可以吗?怎么实现|
+|查找系统被占用的端口,和占用程序|[参考](http://blog.sina.com.cn/s/blog_96f94f710101cqas.html)|
 
-
+[mysql](#mysql)
 
 ### toolbar
 - 定义单独的toolbar_layout实现复用效果
@@ -102,6 +103,7 @@
 - 另外在activity中按下back键，实际是调用了finish方法，应用退出。虽然应用已经退出，但进程没有被杀死，android中一个应用运行于独立的一个虚拟机实例中，所以在重新启动应用时一个类中的静态对象还保持着运行时的状态，注意在合适位置复位这些状态
 - [参考](https://blog.csdn.net/nihaoqiulinhe/article/details/16822279)
 
+<span id = "mysql">哈哈哈</span>
 ### read函数
 - 是一个阻塞方法,和setsotimeout函数相关,阻塞直到发现文件输入流,直文件结束.阻塞或者抛出异常,**源码**注释第一段很好
 - 如果在调用read(byte)函数的之前,byte不为空,比如已经有一些数据了,读入数据也是是从第0位开始
