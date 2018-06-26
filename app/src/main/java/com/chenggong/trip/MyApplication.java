@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.chenggong.trip.db.bean.MyObjectBox;
 import com.chenggong.trip.util.Logger;
+import com.squareup.leakcanary.LeakCanary;
 
 import io.objectbox.BoxStore;
 
@@ -27,6 +28,12 @@ public class MyApplication extends Application implements Thread.UncaughtExcepti
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if(LeakCanary.isInAnalyzerProcess(this)){
+            return;
+        }
+        LeakCanary.install(this);
+
         context = (MyApplication) getApplicationContext();
         mDefaultExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);

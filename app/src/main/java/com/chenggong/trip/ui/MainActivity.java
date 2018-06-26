@@ -163,7 +163,6 @@ public class MainActivity extends BaseActivity {
         drawerToggle.syncState();
 //        toolbar.setNavigationIcon(R.drawable.open_drawer);//设置navigation需要在addDrawerListener之后
 
-
         drawer_navigation = findViewById(R.id.drawer_navigation_view);
         drawer_navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
