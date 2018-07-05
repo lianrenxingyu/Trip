@@ -156,6 +156,7 @@ public class SocketUtil {
                         }
                         len = input.read(bytes);
                         if (len == -1) {
+                            quitFlag = false;
                             continue;
                         }
                         String msg = new String(bytes, 0, len);
